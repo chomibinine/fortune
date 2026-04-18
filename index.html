@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>운명의 나침반 - 프리미엄 정통 운세 포털</title>
-    <!-- 정통 천문 역법 연산을 위한 라이브러리 -->
+    <!-- 정통 천문 역법 계산 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
@@ -34,7 +34,9 @@
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 28px; padding: 30px; margin-bottom: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         label { display: block; margin-bottom: 8px; font-weight: 800; color: var(--accent); font-size: 0.8rem; text-transform: uppercase; }
         input, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 1rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); }
+        input:focus, select:focus { border-color: var(--accent); }
+        .select-row { display: flex; gap: 8px; margin-bottom: 20px; }
+        .select-row select { margin-bottom: 0; }
 
         /* --- Menu Grid --- */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 40px; }
@@ -44,8 +46,8 @@
         .menu-item h3 { margin: 0; font-size: 1.05rem; color: var(--white); font-weight: 800; }
         .menu-item p { margin: 5px 0 0; font-size: 0.75rem; color: var(--text-muted); }
 
-        /* --- Result View --- */
-        #result-view { display: none; animation: fadeIn 0.8s ease forwards; }
+        /* --- Result Views --- */
+        #result-view, #tarot-pick-view { display: none; animation: fadeIn 0.8s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .sec-title { font-size: 1.5rem; color: var(--white); font-weight: 900; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; }
@@ -55,62 +57,82 @@
         .detail-text { font-size: 1.05rem; line-height: 2.0; color: var(--text-main); text-align: justify; word-break: keep-all; }
         .detail-text p { margin-bottom: 20px; }
 
-        /* --- Pillars --- */
+        /* --- Saju Pillars --- */
         .pillar-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 35px; }
         .pillar { background: #000; padding: 15px 5px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
         .pillar span { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
-        .pillar b { font-size: 1.3rem; color: var(--accent); text-shadow: 0 0 10px rgba(0,242,255,0.2); }
+        .pillar b { font-size: 1.3rem; color: var(--accent); }
 
-        /* --- Lucky Action (이미지 디자인 반영) --- */
-        .action-box { margin-top: 60px; padding: 35px; border-radius: 35px; border: 1px solid var(--accent); background: linear-gradient(180deg, #0d1117 0%, #05070a 100%); text-align: center; position: relative; }
+        /* --- Tarot UI --- */
+        .tarot-spread { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .tarot-card-back { aspect-ratio: 2/3.5; background: linear-gradient(135deg, #1a1d23, #05070a); border: 2px solid var(--accent); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .tarot-card-back.selected { opacity: 0.2; pointer-events: none; border-color: var(--text-muted); }
+        .tarot-card-back:hover { transform: translateY(-5px); border-color: var(--gold); }
+        
+        .tarot-result-item { margin-bottom: 50px; text-align: center; }
+        .tarot-visual { width: 140px; height: 230px; margin: 0 auto 20px; background: linear-gradient(135deg, #1a1d23, #05070a); border: 4px solid var(--gold); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(255,215,0,0.2); position: relative; }
+        .tarot-visual b { font-size: 4.5rem; margin-bottom: 10px; filter: drop-shadow(0 0 10px #ffd700); }
+        .tarot-visual span { color: #ffd700; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- Lucky Action Grid --- */
+        .action-box { margin-top: 60px; padding: 35px; border-radius: 35px; border: 1px solid var(--accent); background: linear-gradient(180deg, #0d1117 0%, #05070a 100%); text-align: center; }
         .action-box h2 { color: var(--accent); font-size: 1.4rem; margin: 0 0 25px; font-weight: 900; }
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
         .action-item { background: #05070a; border: 1px solid var(--border); border-radius: 20px; padding: 20px 10px; }
         .action-item .label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 700; }
-        .action-item .value { font-size: 1.1rem; color: var(--gold); font-weight: 900; line-height: 1.3; }
+        .action-item .value { font-size: 1.05rem; color: var(--gold); font-weight: 900; }
 
-        /* --- Coupang Button --- */
-        .btn-buy { display: inline-block; background: var(--accent); color: #000; padding: 22px 40px; border-radius: 18px; text-decoration: none; font-weight: 900; font-size: 1.2rem; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3); transition: 0.3s; }
-        .btn-buy:hover { background: #fff; transform: scale(1.03); }
+        /* --- Coupang Revenue --- */
+        .btn-buy { display: inline-block; background: var(--accent); color: #000; padding: 22px 40px; border-radius: 18px; text-decoration: none; font-weight: 900; font-size: 1.2rem; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3); transition: 0.3s; width: 100%; text-align: center; }
+        .btn-buy:hover { background: #fff; transform: scale(1.02); }
         .disclaimer { font-size: 0.7rem; color: #4e5561; margin-top: 25px; line-height: 1.5; }
 
-        /* --- Nav --- */
+        /* --- Bottom Nav --- */
         .nav { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(13, 17, 23, 0.96); backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 9999; }
-        .nav-item { color: #4e5561; text-align: center; font-size: 0.75rem; font-weight: 800; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; gap: 5px; }
+        .nav-item { color: #4e5561; text-align: center; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; gap: 4px; flex: 1; }
         .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 1.6rem; font-style: normal; }
+        .nav-item i { font-size: 1.4rem; font-style: normal; }
 
         /* --- Loader --- */
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 100000; flex-direction: column; justify-content: center; align-items: center; }
         .spinner { width: 60px; height: 60px; border: 6px solid rgba(0, 242, 255, 0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- Visitor --- */
-        .visitor-count { text-align: center; padding: 20px; font-size: 0.8rem; color: #4e5561; margin-bottom: 20px; }
+        .visitor-count { text-align: center; padding: 20px; font-size: 0.8rem; color: #4e5561; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="spinner"></div>
-    <p style="color: var(--accent); margin-top: 25px; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;">운명의 실타래를 분석하는 중...</p>
+    <p style="color: var(--accent); margin-top: 25px; font-weight: 800;">운명의 데이터를 분석 중입니다...</p>
 </div>
 
 <div class="app-container">
     <div id="home-view">
         <header class="header">
             <h1>운명의 나침반</h1>
-            <p>정통 천문 역법 및 심리학 기반 프리미엄 운세 리포트</p>
+            <p>정통 천문 역법 기반 프리미엄 운세 리포트</p>
         </header>
 
         <div class="card">
-            <label>분석 대상 성함</label>
-            <input type="text" id="user-name" placeholder="성함을 입력하세요" value="">
+            <label>성함</label>
+            <input type="text" id="user-name" placeholder="이름을 입력하세요">
             
-            <div style="display: flex; gap: 12px;">
-                <div style="flex: 2;">
-                    <label>생년월일</label>
-                    <input type="date" id="user-birth">
+            <label>생년월일</label>
+            <div class="select-row">
+                <select id="user-year"></select>
+                <select id="user-month"></select>
+                <select id="user-day"></select>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-bottom: 0px;">
+                <div style="flex: 1;">
+                    <label>성별</label>
+                    <select id="user-gender">
+                        <option value="male">남성</option>
+                        <option value="female">여성</option>
+                    </select>
                 </div>
                 <div style="flex: 1;">
                     <label>력 체계</label>
@@ -120,119 +142,186 @@
                     </select>
                 </div>
             </div>
-            
+
             <label>태어난 시각</label>
             <select id="user-time">
                 <option value="none">모름 / 미정</option>
-                <option value="자">자시 (23:30 ~ 01:29)</option>
-                <option value="축">축시 (01:30 ~ 03:29)</option>
-                <option value="인">인시 (03:30 ~ 05:29)</option>
-                <option value="묘">묘시 (05:30 ~ 07:29)</option>
-                <option value="진">진시 (07:30 ~ 09:29)</option>
-                <option value="사">사시 (09:30 ~ 11:29)</option>
-                <option value="오">오시 (11:30 ~ 13:29)</option>
-                <option value="미">미시 (13:30 ~ 15:29)</option>
-                <option value="신">신시 (15:30 ~ 17:29)</option>
-                <option value="유">유시 (17:30 ~ 19:29)</option>
-                <option value="술">술시 (19:30 ~ 21:29)</option>
-                <option value="해">해시 (21:30 ~ 23:29)</option>
+                <option value="자">자시 (23:30 ~ 01:29)</option><option value="축">축시 (01:30 ~ 03:29)</option>
+                <option value="인">인시 (03:30 ~ 05:29)</option><option value="묘">묘시 (05:30 ~ 07:29)</option>
+                <option value="진">진시 (07:30 ~ 09:29)</option><option value="사">사시 (09:30 ~ 11:29)</option>
+                <option value="오">오시 (11:30 ~ 13:29)</option><option value="미">미시 (13:30 ~ 15:29)</option>
+                <option value="신">신시 (15:30 ~ 17:29)</option><option value="유">유시 (17:30 ~ 19:29)</option>
+                <option value="술">술시 (19:30 ~ 21:29)</option><option value="해">해시 (21:30 ~ 23:29)</option>
             </select>
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="handleStart('saju')">
-                <b>🧭</b>
-                <h3>정통 사주 분석</h3>
-                <p>8단계 심층 구조 리포트</p>
-            </div>
-            <div class="menu-item" onclick="handleStart('tojeong')">
-                <b>📜</b>
-                <h3>정통 토정비결</h3>
-                <p>144괘 연간/월별 운세</p>
-            </div>
-            <div class="menu-item" onclick="handleStart('star')">
-                <b>✨</b>
-                <h3>별자리 심리</h3>
-                <p>태양궁 기반 기질 분석</p>
-            </div>
-            <div class="menu-item" onclick="handleStart('tarot')">
-                <b>🃏</b>
-                <h3>타로 무의식</h3>
-                <p>선택 기반 심리 솔루션</p>
-            </div>
+            <div class="menu-item" onclick="handleStart('saju')"><b>🧭</b><h3>사주 분석</h3><p>8단계 심층 리포트</p></div>
+            <div class="menu-item" onclick="handleStart('tojeong')"><b>📜</b><h3>토정비결</h3><p>144괘 월별 운세</p></div>
+            <div class="menu-item" onclick="handleStart('star')"><b>✨</b><h3>별자리</h3><p>기질 및 심리 분석</p></div>
+            <div class="menu-item" onclick="handleStart('tarot')"><b>🃏</b><h3>타로</h3><p>직접 뽑는 3장 리딩</p></div>
         </div>
 
         <div class="visitor-count" id="visitor-ui"></div>
     </div>
 
+    <!-- Tarot Picker -->
+    <div id="tarot-pick-view">
+        <header class="header"><h1>무의식의 여정</h1><p>과거, 현재, 미래를 투영할 카드 3장을 고르세요.</p></header>
+        <div style="text-align:center; color:var(--gold); margin-bottom:20px; font-weight:700;" id="tarot-count-info">3장 중 0장 선택됨</div>
+        <div class="tarot-spread" id="tarot-spread-area"></div>
+        <button class="btn-buy" style="background: var(--card); color: #fff; margin-top: 30px;" onclick="location.reload()">홈으로 돌아가기</button>
+    </div>
+
+    <!-- Result -->
     <div id="result-view">
         <div id="report-content"></div>
-        <button class="btn-buy" style="background: var(--card); color: #fff; width: 100%; margin-top: 30px; box-shadow: none;" onclick="location.reload()">홈으로 돌아가기</button>
+        <button class="btn-buy" style="background: var(--card); color: #fff; margin-top: 30px; box-shadow: none;" onclick="location.reload()">처음으로 돌아가기</button>
     </div>
 </div>
 
+<!-- Nav -->
 <nav class="nav">
     <div class="nav-item active" onclick="location.reload()"><i>🏠</i>홈</div>
     <div class="nav-item" onclick="handleStart('saju')"><i>🧭</i>사주</div>
     <div class="nav-item" onclick="handleStart('tojeong')"><i>📜</i>토정</div>
+    <div class="nav-item" onclick="handleStart('star')"><i>✨</i>별자리</div>
     <div class="nav-item" onclick="handleStart('tarot')"><i>🃏</i>타로</div>
 </nav>
 
 <script>
-    // --- 데이터 저장소 (8단계 사주 및 정통 해석) ---
-    const sajuContents = {
-        personality: (gan) => `<p>귀하의 본질인 <b>일간(${gan})</b>은 운명의 나침반이자 인생을 이끄는 핵심 동력입니다. 외부의 압력에 굴복하기보다 자신만의 주관을 지키려는 성질이 강하며, 논리적인 체계 속에 비범한 직관력을 숨기고 있는 전략가적 기질을 타고났습니다.</p>`,
-        wealth: `<p>재물운은 단순한 노동보다는 <b>'시스템과 지혜의 결합'</b>에서 발생합니다. 무에서 유를 창조하는 기획 능력이 뛰어나므로, 단기적인 수익에 일희일비하기보다 3년 이상의 장기적인 가치 투자와 자산 구축에 에너지를 쏟는 것이 부의 그릇을 채우는 비결입니다.</p>`,
-        advice: `<p>귀하의 명식은 <b>대기만성형 개척자</b>의 구조를 가졌습니다. 초년의 담금질은 중년의 비상을 위한 데이터 축적 과정입니다. 남들의 속도에 맞추지 말고 당신만의 리듬을 유지할 때, 우주는 상상 이상의 거대한 결실을 예비해 둘 것입니다.</p>`
+    // --- Contents DB ---
+    const sajuData = {
+        personality: (gan) => `<p>귀하의 영혼의 코어인 <b>일간(${gan})</b>은 운명의 핵입니다. 외부 압력에도 본연의 색을 잃지 않는 강력한 자아를 지녔으며, 체계적인 논리와 비범한 직관을 동시에 활용하는 기질이 돋보입니다.</p>`,
+        early: `<p>인생의 봄(초년)에는 변화무쌍한 에너지가 흐릅니다. 다양한 경험을 통해 내면의 그릇을 키우는 시기이며, 이때의 시행착오는 중년의 비상을 위한 필수 데이터가 됩니다.</p>`,
+        middle: `<p>인생의 여름(중년)은 가장 강력한 확장기입니다. 초년에 쌓은 지식이 실질적인 재화와 권위로 치환되며, 자신의 이름이 브랜드가 되는 성취를 이룹니다.</p>`,
+        late: `<p>인생의 가을·겨울(말년)은 화려한 결실의 계절입니다. 물질적 풍요뿐만 아니라 정신적인 고양감이 극대화되어 후배들에게 지혜의 귀감이 되는 명망 있는 위치에 서게 됩니다.</p>`,
+        wealth: `<p>재물운은 노동보다 <b>'지식 자산과 시스템'</b>에서 발생합니다. 무에서 유를 만드는 능력이 탁월하므로, 단기 차익보다는 장기적인 가치 투자와 시스템 구축이 부의 마스터키입니다.</p>`,
+        love: `<p>영혼의 결이 맞는 '지음'을 갈망하는 타입입니다. 외적인 조건보다 대화의 깊이를 중시하며, 마음이 정돈될 때 비로소 운명적인 짝이 나타나는 강력한 끌어당김의 운로를 가졌습니다.</p>`,
+        health: `<p>단기 집중력이 높은 체질로 뇌 신경계의 피로를 주의해야 합니다. 스트레스가 기혈을 막지 않도록 매일의 산책과 '디지털 로그아웃'이 최고의 개운법입니다.</p>`,
+        advice: `<p>귀하의 명식은 <b>대기만성형 개척자</b>의 전형입니다. 지금의 성과에 일희일비하지 마십시오. 시간이 흐를수록 가치가 복리로 증폭되는 구조를 믿고 당신만의 리듬을 유지하십시오.</p>`
     };
 
+    const tarotCards = [
+        { name: "THE FOOL", icon: "🃏", msg: "순수한 열정과 모험심이 새로운 길을 엽니다." },
+        { name: "THE MAGICIAN", icon: "🪄", msg: "당신의 재능이 현실로 발현되는 황금기입니다." },
+        { name: "THE EMPRESS", icon: "👑", msg: "풍요와 대지의 만족이 정서적 안정을 줍니다." },
+        { name: "WHEEL OF FORTUNE", icon: "🎡", msg: "거부할 수 없는 변화가 더 높은 곳으로 이끕니다." },
+        { name: "THE SUN", icon: "☀️", msg: "모든 어둠이 걷히고 최고의 영광이 도래합니다." },
+        { name: "THE WORLD", icon: "🌎", msg: "긴 여정의 끝에서 완벽한 마침표를 찍습니다." },
+        { name: "THE STAR", icon: "⭐", msg: "희망의 별이 당신의 앞날을 축복하고 있습니다." },
+        { name: "THE LOVERS", icon: "❤️", msg: "조화로운 결합과 가슴 뛰는 선택의 운기입니다." }
+    ];
+
+    let tarotChoices = [];
+
+    // --- Init ---
+    function init() {
+        const yS = document.getElementById('user-year');
+        const mS = document.getElementById('user-month');
+        const dS = document.getElementById('user-day');
+        const now = new Date().getFullYear();
+        if(yS) {
+            for(let i=now; i>=1940; i--) yS.add(new Option(i+'년', i));
+            for(let i=1; i<=12; i++) mS.add(new Option(i+'월', i));
+            for(let i=1; i<=31; i++) dS.add(new Option(i+'일', i));
+            yS.value = 1990; mS.value = 1; dS.value = 1;
+        }
+        
+        const tk = 'destiny_v_total_vfinal';
+        const dk = 'destiny_v_today_vfinal_' + new Date().toDateString();
+        let total = parseInt(localStorage.getItem(tk) || 0) + 1;
+        let today = parseInt(localStorage.getItem(dk) || 0) + 1;
+        localStorage.setItem(tk, total); localStorage.setItem(dk, today);
+        const visitorUI = document.getElementById('visitor-ui');
+        if(visitorUI) visitorUI.innerHTML = `🔮 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명 상담 완료`;
+    }
+
     function getOhaeng(gan) {
-        if ('甲乙'.includes(gan)) return '목(木)';
-        if ('丙丁'.includes(gan)) return '화(火)';
-        if ('戊己'.includes(gan)) return '토(土)';
-        if ('庚辛'.includes(gan)) return '금(金)';
-        return '수(水)';
+        if ('甲乙'.includes(gan)) return '목(木)'; if ('丙丁'.includes(gan)) return '화(火)';
+        if ('戊己'.includes(gan)) return '토(土)'; if ('庚辛'.includes(gan)) return '금(金)'; return '수(水)';
     }
 
-    function getLuckyData(ohaeng) {
-        const data = {
-            '목(木)': { item: '천연 식물 화분', dir: '정동쪽 (성장/희망)', color: '그린 & 라이트 블루', num: '3, 8' },
-            '화(火)': { item: '조명 무드등', dir: '정남쪽 (명예/확산)', color: '버건디 레드 & 퍼플', num: '2, 7' },
-            '토(土)': { item: '가죽 지갑 / 벨트', dir: '중앙 & 동북쪽 (안정)', color: '황토색 & 베이지', num: '5, 0' },
-            '금(金)': { item: '메탈 시계 / 주얼리', dir: '정서쪽 (재물/결실)', color: '코발트 블루 & 실버', num: '4, 9' },
-            '수(水)': { item: '가습기 / 텀블러', dir: '정북쪽 (지혜/유연)', color: '딥 블랙 & 네이비', num: '1, 6' }
+    function getLuckSet(ohaeng) {
+        const set = {
+            '목(木)': { item: '천연 식물 화분', dir: '정동쪽', color: '딥 그린', num: '3, 8' },
+            '화(火)': { item: '조명 무드등', dir: '정남쪽', color: '버건디 레드', num: '2, 7' },
+            '토(土)': { item: '가죽 지갑', dir: '중앙/동북', color: '옐로우', num: '5, 0' },
+            '금(金)': { item: '메탈 시계', dir: '정서쪽', color: '코발트 블루', num: '4, 9' },
+            '수(水)': { item: '가습기 / 텀블러', dir: '정북쪽', color: '딥 블랙', num: '1, 6' }
         };
-        return data[ohaeng] || data['토(土)'];
+        return set[ohaeng] || set['토(土)'];
     }
 
-    // --- 실행 로직 ---
+    // --- Logic ---
     async function handleStart(type) {
-        const name = document.getElementById('user-name').value;
-        const birth = document.getElementById('user-birth').value;
-        if (!name || !birth) return alert("성함과 생년월일을 입력해주세요.");
+        const nameInput = document.getElementById('user-name');
+        if (!nameInput || !nameInput.value) return alert("성함을 입력해 주세요.");
+
+        if(type === 'tarot') {
+            tarotChoices = [];
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('tarot-pick-view').style.display = 'block';
+            renderDeck();
+            return;
+        }
 
         document.getElementById('loader').style.display = 'flex';
-
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('result-view').style.display = 'block';
-
-            const birthDate = new Date(birth);
-            const sol = Solar.fromYmd(birthDate.getFullYear(), birthDate.getMonth() + 1, birthDate.getDate());
-            const bazi = sol.getLunar().getEightChar();
-            const myGan = bazi.getDayGan();
-            const ohaeng = getOhaeng(myGan);
-            const luck = getLuckyData(ohaeng);
-            const seed = name.length + birthDate.getDate();
-
-            renderReport(type, { name, bazi, ohaeng, luck, seed });
-        }, 1600);
+            renderFinalReport(type, calculateBaseData());
+        }, 1500);
     }
 
-    function renderReport(type, d) {
-        let html = `<div class="header"><h1>${d.name}님의 운명 리포트</h1></div>`;
+    function renderDeck() {
+        const area = document.getElementById('tarot-spread-area');
+        area.innerHTML = '';
+        for(let i=0; i<16; i++) {
+            const c = document.createElement('div');
+            c.className = 'tarot-card-back';
+            c.innerHTML = '🔮';
+            c.id = `t-card-${i}`;
+            c.onclick = () => pickTarot(i);
+            area.appendChild(c);
+        }
+        document.getElementById('tarot-count-info').innerText = '3장 중 0장 선택됨';
+    }
 
+    function pickTarot(i) {
+        if(tarotChoices.includes(i)) return;
+        tarotChoices.push(i);
+        document.getElementById(`t-card-${i}`).classList.add('selected');
+        document.getElementById('tarot-count-info').innerText = `3장 중 ${tarotChoices.length}장 선택됨`;
+
+        if(tarotChoices.length === 3) {
+            document.getElementById('loader').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('tarot-pick-view').style.display = 'none';
+                document.getElementById('result-view').style.display = 'block';
+                const d = calculateBaseData();
+                d.tarotRes = tarotChoices.map(idx => tarotCards[idx % tarotCards.length]);
+                renderFinalReport('tarot', d);
+            }, 1200);
+        }
+    }
+
+    function calculateBaseData() {
+        const n = document.getElementById('user-name').value;
+        const y = document.getElementById('user-year').value;
+        const m = document.getElementById('user-month').value;
+        const d = document.getElementById('user-day').value;
+        const sol = Solar.fromYmd(parseInt(y), parseInt(m), parseInt(d));
+        const bazi = sol.getLunar().getEightChar();
+        const myGan = bazi.getDayGan();
+        const oh = getOhaeng(myGan);
+        return { name: n, bazi, ohaeng: oh, luck: getLuckSet(oh), seed: n.length + parseInt(d), sol };
+    }
+
+    function renderFinalReport(type, d) {
+        let html = `<div class="header"><h1>${d.name}님의 분석 리포트</h1></div>`;
         if (type === 'saju') {
             html += `
                 <div class="pillar-row">
@@ -241,73 +330,59 @@
                     <div class="pillar"><span>월주</span><b>${d.bazi.getMonthGan()}${d.bazi.getMonthZhi()}</b></div>
                     <div class="pillar"><span>연주</span><b>${d.bazi.getYearGan()}${d.bazi.getYearZhi()}</b></div>
                 </div>
-                <div class="sec-title">1. 기본 성향 분석</div>
-                <div class="summary-box">"귀하는 ${d.ohaeng}의 기운을 타고난 주도적 전략가입니다."</div>
-                <div class="detail-text">${sajuContents.personality(d.bazi.getDayGan())}</div>
-                <div class="sec-title">5. 재물운 및 가치 창출</div>
-                <div class="detail-text">${sajuContents.wealth}</div>
-                <div class="sec-title">8. 종합 조언</div>
-                <div class="detail-text">${sajuContents.advice}</div>
-            `;
-        } else if (type === 'tojeong') {
-            html += `
-                <div class="sec-title">토정비결 괘(卦) 분석</div>
-                <div class="summary-box">"봄 산에 꽃이 만발하니 나비가 스스로 찾아오는 형국입니다."</div>
-                <div class="detail-text">
-                    <p><b>[올해의 총운]</b> 막혔던 자금의 흐름이 물꼬를 트고 주변에 조력자가 모여드는 시기입니다. 무리한 확장보다는 내실을 기하며 하반기의 기회를 포착하십시오.</p>
-                    <p><b>[월별 흐름]</b> 상반기에는 대인관계의 폭을 넓히고, 하반기에는 문서운과 명예운이 강력해지니 계약이나 이직에 유리한 해입니다.</p>
-                </div>
+                <div class="sec-title">1. 기본 성향</div><div class="summary-box">"귀하는 ${d.ohaeng}의 기운을 품은 주도적 인물입니다."</div><div class="detail-text">${sajuData.personality(d.bazi.getDayGan())}</div>
+                <div class="sec-title">2. 초년운</div><div class="detail-text">${sajuData.early}</div>
+                <div class="sec-title">3. 중년운</div><div class="detail-text">${sajuData.middle}</div>
+                <div class="sec-title">4. 말년운</div><div class="detail-text">${sajuData.late}</div>
+                <div class="sec-title">5. 재물/시스템</div><div class="detail-text">${sajuData.wealth}</div>
+                <div class="sec-title">6. 애정/인연</div><div class="detail-text">${sajuData.love}</div>
+                <div class="sec-title">7. 건강 에너지</div><div class="detail-text">${sajuData.health}</div>
+                <div class="sec-title">8. 종합 조언</div><div class="detail-text">${sajuData.advice}</div>
             `;
         } else if (type === 'tarot') {
-            html += `
-                <div class="sec-title">타로 무의식 판독</div>
-                <div style="text-align:center; margin-bottom:30px;">
-                    <div style="width:150px; height:240px; margin:0 auto; background:linear-gradient(135deg, #1a1d23, #000); border:3px solid var(--gold); border-radius:15px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 30px rgba(255,215,0,0.2);">
-                        <b style="font-size:5rem;">☀️</b>
-                        <span style="color:var(--gold); font-weight:900; margin-top:10px;">THE SUN</span>
+            const labels = ["과거의 영향", "현재의 상황", "미래의 흐름"];
+            html += `<div class="sec-title">타로 3카드 정밀 리포트</div>`;
+            d.tarotRes.forEach((c, i) => {
+                html += `
+                    <div class="tarot-result-item">
+                        <span style="color:var(--accent); font-weight:900; display:block; margin-bottom:15px;">[ ${labels[i]} ]</span>
+                        <div class="tarot-visual"><b>${c.icon}</b><span>${c.name}</span></div>
+                        <div class="summary-box">" ${c.msg} "</div>
                     </div>
-                </div>
-                <div class="summary-box">"어둠이 걷히고 모든 광채가 당신을 향하고 있습니다."</div>
-                <div class="detail-text"><p>지금 당신이 품고 있는 고민은 곧 밝은 에너지로 전환될 것입니다. 망설이지 말고 당신의 능력을 세상에 증명하십시오. 완벽한 성공이 도래할 타이밍입니다.</p></div>
-            `;
-        } else {
-            html += `<div class="summary-box">분석 로직을 연산 중입니다. 사주와 타로 서비스를 먼저 이용해 보세요.</div>`;
+                `;
+            });
+        } else if (type === 'star') {
+            const dates = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
+            const signs = ["염소", "물병", "물고기", "양", "황소", "쌍둥이", "게", "사자", "처녀", "천칭", "전갈", "사수", "염소"];
+            const m = d.sol.getMonth(); const day = d.sol.getDay();
+            const signKey = day > dates[m - 1] ? signs[m] : signs[m - 1];
+            html += `<div class="sec-title">별자리 분석: ${signKey}자리</div><div class="summary-box">당신은 고유한 우주적 지문을 타고났습니다.</div><div class="detail-text"><p>별자리의 에너지는 귀하의 사회적 페르소나를 결정합니다. 자신을 믿고 나아갈 때 거대한 성취가 따릅니다.</p></div>`;
+        } else if (type === 'tojeong') {
+            html += `<div class="sec-title">토정비결 괘 분석</div><div class="summary-box">봄 산에 꽃이 만발하니 나비가 찾아옵니다.</div><div class="detail-text"><p>올해는 문서상 이익이 예상되며 귀인의 도움이 따릅니다. 하반기에 큰 성취가 따를 것이니 성실히 준비하십시오.</p></div>`;
         }
 
-        // --- Lucky Action Grid (쿠팡 erqHD0 연동) ---
-        const coupangUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(d.luck.item)}&utm_source=affiliate&utm_medium=affiliate&utm_campaign=link_erqHD0`;
-        
+        const cpUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(d.luck.item)}&utm_source=affiliate&utm_medium=affiliate&utm_campaign=link_erqHD0`;
         html += `
             <div class="action-box">
-                <h2>✨ ${d.name}님을 위한 개운(開運) 액션</h2>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:25px;">막힌 운을 뚫고 긍정적인 에너지를 내 편으로 만드는 비결</p>
+                <h2>✨ ${d.name}님을 위한 개운 액션</h2>
                 <div class="action-grid">
                     <div class="action-item"><div class="label">행운의 방향</div><div class="value">${d.luck.dir}</div></div>
                     <div class="action-item"><div class="label">수호 색상</div><div class="value">${d.luck.color}</div></div>
-                    <div class="action-item"><div class="label">행운의 숫자</div><div class="value">${d.luck.num}</div></div>
+                    <div class="action-item"><div class="label">행운의 숫자</div><div class="value">${(d.seed % 9) + 1}</div></div>
                     <div class="action-item"><div class="label">추천 행운템</div><div class="value">${d.luck.item}</div></div>
                 </div>
-                <a href="${coupangUrl}" target="_blank" class="btn-buy">👉 ${d.luck.item} 최저가 확인하기</a>
+                <a href="${cpUrl}" target="_blank" class="btn-buy">👉 ${d.luck.item} 최저가 확인하기</a>
                 <div class="disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div>
             </div>
         `;
-
-        document.getElementById('report-content').innerHTML = html;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const reportContent = document.getElementById('report-content');
+        if(reportContent) {
+            reportContent.innerHTML = html;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
-    // --- 카운터 및 초기화 ---
-    function initApp() {
-        const totalK = 'destiny_total_count';
-        const todayK = 'destiny_today_count_' + new Date().toDateString();
-        let total = parseInt(localStorage.getItem(totalK) || 0) + 1;
-        let today = parseInt(localStorage.getItem(todayK) || 0) + 1;
-        localStorage.setItem(totalK, total);
-        localStorage.setItem(todayK, today);
-        document.getElementById('visitor-ui').innerHTML = `🔮 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명 상담 중`;
-    }
-
-    window.onload = initApp;
+    window.onload = init;
 </script>
 </body>
 </html>
