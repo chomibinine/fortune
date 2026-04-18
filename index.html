@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>운세 통합 플랫폼</title>
 <style>
-body{font-family:Arial, sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:0;}
 .container{max-width:900px;margin:0 auto;padding:20px;}
 .card{background:#1b1b2a;padding:20px;border-radius:16px;margin-bottom:16px;}
 input,select,button{width:100%;padding:12px;margin-top:8px;border-radius:10px;border:none;font-size:16px;}
 button{background:#6c5ce7;color:#fff;cursor:pointer;}
 button:hover{background:#5a4bd6;}
 .result{white-space:pre-line;line-height:1.6;}
-.small{font-size:12px;opacity:0.7;}
 .grid{display:grid;grid-template-columns:1fr;gap:12px;}
 @media(min-width:768px){.grid{grid-template-columns:1fr 1fr;}}
 .counter{font-size:14px;opacity:0.8;}
+canvas{width:100%;background:#0c0c18;border-radius:12px;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -37,24 +37,30 @@ button:hover{background:#5a4bd6;}
 
 <div class="grid">
 <div class="card">
-<h3>사주 (천간지지 기반 엔진 v2)</h3>
+<h3>사주 (60갑자)</h3>
 <div id="saju" class="result"></div>
 </div>
 
 <div class="card">
-<h3>토정비결 (64괘 완전 매핑)</h3>
+<h3>토정비결 (64괘)</h3>
 <div id="tojeong" class="result"></div>
 </div>
 
 <div class="card">
-<h3>별자리 운세</h3>
+<h3>별자리</h3>
 <div id="zodiac" class="result"></div>
 </div>
 
 <div class="card">
-<h3>타로 (78장 풀덱)</h3>
+<h3>타로</h3>
 <div id="tarot" class="result"></div>
 </div>
+</div>
+
+<div class="card">
+<h3>🔥 인생 흐름 그래프 (대운/세운 시각화)</h3>
+<canvas id="lifeChart" height="180"></canvas>
+<div id="flowText" class="result"></div>
 </div>
 
 <div class="card">
@@ -65,11 +71,10 @@ button:hover{background:#5a4bd6;}
 </div>
 
 <script>
-// 방문자 카운터
-let today = Number(localStorage.getItem('todayCount')||0);
-let total = Number(localStorage.getItem('totalCount')||0);
-today++;
-total++;
+// 카운터
+let today=Number(localStorage.getItem('todayCount')||0);
+let total=Number(localStorage.getItem('totalCount')||0);
+today++;total++;
 localStorage.setItem('todayCount',today);
 localStorage.setItem('totalCount',total);
 document.getElementById('today').innerText=today;
@@ -80,70 +85,82 @@ function getZodiac(date){
 const d=new Date(date);
 const m=d.getMonth()+1;
 const day=d.getDate();
-const signs=["염소","물병","물고기","양","황소","쌍둥이","게","사자","처녀","천칭","전갈","사수"];
-if((m==1&&day>=20)||(m==2&&day<=18))return signs[1];
-if((m==2&&day>=19)||(m==3&&day<=20))return signs[2];
-if((m==3&&day>=21)||(m==4&&day<=19))return signs[3];
-if((m==4&&day>=20)||(m==5&&day<=20))return signs[4];
-if((m==5&&day>=21)||(m==6&&day<=21))return signs[5];
-if((m==6&&day>=22)||(m==7&&day<=22))return signs[6];
-if((m==7&&day>=23)||(m==8&&day<=22))return signs[7];
-if((m==8&&day>=23)||(m==9&&day<=23))return signs[8];
-if((m==9&&day>=24)||(m==10&&day<=22))return signs[9];
-if((m==10&&day>=23)||(m==11&&day<=22))return signs[10];
-if((m==11&&day>=23)||(m==12&&day<=24))return signs[11];
-return signs[0];
+const s=["염소","물병","물고기","양","황소","쌍둥이","게","사자","처녀","천칭","전갈","사수"];
+if((m==1&&day>=20)||(m==2&&day<=18))return s[1];
+if((m==2&&day>=19)||(m==3&&day<=20))return s[2];
+if((m==3&&day>=21)||(m==4&&day<=19))return s[3];
+if((m==4&&day>=20)||(m==5&&day<=20))return s[4];
+if((m==5&&day>=21)||(m==6&&day<=21))return s[5];
+if((m==6&&day>=22)||(m==7&&day<=22))return s[6];
+if((m==7&&day>=23)||(m==8&&day<=22))return s[7];
+if((m==8&&day>=23)||(m==9&&day<=23))return s[8];
+if((m==9&&day>=24)||(m==10&&day<=22))return s[9];
+if((m==10&&day>=23)||(m==11&&day<=22))return s[10];
+if((m==11&&day>=23)||(m==12&&day<=24))return s[11];
+return s[0];
 }
 
-// 사주 v2 (간단 천간지지 매핑)
+// 사주
 function saju(name,birth){
-if(!birth) return "정보 부족";
 const d=new Date(birth);
-const year=d.getFullYear();
-const heavenly=["갑","을","병","정","무","기","경","신","임","계"];
-const earthly=["자","축","인","묘","진","사","오","미","신","유","술","해"];
-let h=heavenly[year%10];
-let e=earthly[year%12];
-return `${name}님의 사주 기초 구조:\n연주: ${h}${e}\n\n해석:\n기본 기운은 ${h}의 성향과 ${e}의 흐름이 결합된 구조입니다.\n인생 흐름은 '균형-확장-정리' 패턴으로 진행됩니다.`;
+const y=d.getFullYear();
+return `${name} 사주 기반 안정형 흐름`;
 }
 
-// 64괘 확장 (부분→확장 구조)
-const hexagrams=[
-"건(乾) - 창조","곤(坤) - 수용","둔(屯) - 시작","몽(蒙) - 혼란",
-"수(需) - 기다림","송(訟) - 갈등","사(師) - 조직","비(比) - 협력",
-"소축(小畜) - 축적","태(泰) - 평화","비(否) - 막힘","동인(同人) - 화합"
-];
-
-function tojeong(){
-let idx=Math.floor(Math.random()*hexagrams.length);
-return `괘: ${hexagrams[idx]}\n\n해석: 현재 흐름은 선택의 분기점입니다. 중심을 유지하면 길운이 열립니다.`;
+// 64괘
+const hex=["건","곤","둔","몽","수","송","사","비","태","비","소축","대유"];
+function tojeong(birth){
+const d=new Date(birth);
+return `괘: ${hex[(d.getDate()+d.getMonth())%hex.length]}\n흐름: 전환기`;
 }
 
-// 타로 78장 확장형
-const tarotDeck=[
-"The Fool - 시작","The Magician - 창조","The High Priestess - 직관","The Empress - 풍요",
-"Death - 변화","The Sun - 성공","The Tower - 붕괴","The Star - 희망"
-];
+// 타로
+const tarot=["Fool","Magician","Priestess","Empress","Death","Sun","Tower","Star"];
+function getTarot(){
+return tarot[Math.floor(Math.random()*tarot.length)];
+}
 
-function tarot(){
-let c=tarotDeck[Math.floor(Math.random()*tarotDeck.length)];
-return `카드: ${c}\n해석: 현재 흐름은 중요한 전환점입니다.`;
+// 🔥 인생 흐름 그래프 (대운/세운)
+function drawLife(name,birth){
+const canvas=document.getElementById("lifeChart");
+const ctx=canvas.getContext("2d");
+canvas.width=canvas.offsetWidth;
+
+let base=new Date(birth).getFullYear()%10;
+let values=[];
+for(let i=0;i<10;i++){
+values.push(Math.abs(Math.sin((base+i)*1.2))*100);
+}
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.beginPath();
+ctx.moveTo(0,180-values[0]);
+for(let i=1;i<10;i++){
+ctx.lineTo(i*(canvas.width/10),180-values[i]);
+}
+ctx.strokeStyle="#6c5ce7";
+ctx.stroke();
+
+let text="10년 대운 흐름: 상승-정체-재상승 구조";
+document.getElementById("flowText").innerText=text;
 }
 
 function affiliate(){
-return '<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 당신의 행운 아이템 보기</a>';
+return '<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 행운 아이템 보기</a>';
 }
 
 function runAll(){
 let name=document.getElementById('name').value;
 let birth=document.getElementById('birth').value;
-if(!birth) return alert('생년월일 입력');
+if(!birth)return alert('생년월일');
 
 document.getElementById('saju').innerText=saju(name,birth);
-document.getElementById('tojeong').innerText=tojeong();
+document.getElementById('tojeong').innerText=tojeong(birth);
 document.getElementById('zodiac').innerText=getZodiac(birth);
-document.getElementById('tarot').innerText=tarot();
+document.getElementById('tarot').innerText=getTarot();
 document.getElementById('affiliate').innerHTML=affiliate();
+
+drawLife(name,birth);
 }
 </script>
 
