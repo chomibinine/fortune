@@ -12,15 +12,8 @@ background:radial-gradient(circle at top,#141427,#07070f);
 color:#eaeaf2;
 }
 .container{max-width:920px;margin:0 auto;padding:18px;}
-.header{
-text-align:center;
-padding:28px 10px;
-}
-.header h1{
-font-size:28px;
-margin:0;
-letter-spacing:-1px;
-}
+.header{text-align:center;padding:28px 10px;}
+.header h1{font-size:28px;margin:0;letter-spacing:-1px;}
 .header p{opacity:0.6;margin-top:8px;font-size:13px;}
 .card{
 background:linear-gradient(145deg,#19192b,#10101c);
@@ -31,78 +24,26 @@ margin:12px 0;
 box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 input,select{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:12px;
-border:none;
-background:#0f0f1a;
-color:#fff;
+width:100%;padding:12px;margin-top:10px;border-radius:12px;border:none;background:#0f0f1a;color:#fff;
 }
 button{
-width:100%;
-padding:14px;
-margin-top:14px;
-border:none;
-border-radius:14px;
-font-weight:bold;
-cursor:pointer;
-background:linear-gradient(90deg,#7f5af0,#2cb67d);
-color:#fff;
+width:100%;padding:14px;margin-top:14px;border:none;border-radius:14px;font-weight:bold;cursor:pointer;
+background:linear-gradient(90deg,#7f5af0,#2cb67d);color:#fff;
 box-shadow:0 0 18px rgba(127,90,240,0.35);
 }
-button:hover{opacity:0.92;}
-.title{
-font-size:15px;
-color:#c9b6ff;
-margin-bottom:8px;
-}
-.result{
-white-space:pre-line;
-line-height:1.7;
-font-size:14px;
-color:#e5e5f5;
-}
-.summary{
-font-size:15px;
-line-height:1.6;
-background:rgba(127,90,240,0.08);
-padding:12px;
-border-radius:12px;
-border-left:3px solid #7f5af0;
-}
+.title{font-size:15px;color:#c9b6ff;margin-bottom:8px;}
+.result{white-space:pre-line;line-height:1.75;font-size:14px;color:#e5e5f5;}
+.summary{font-size:15px;line-height:1.7;background:rgba(127,90,240,0.08);padding:12px;border-radius:12px;border-left:3px solid #7f5af0;}
 .hidden{display:none;}
-.grid{
-display:grid;
-grid-template-columns:1fr;
-gap:12px;
-}
+.grid{display:grid;grid-template-columns:1fr;gap:12px;}
 @media(min-width:768px){.grid{grid-template-columns:1fr 1fr;}}
-.badge{
-display:inline-block;
-padding:4px 8px;
-font-size:12px;
-border-radius:999px;
-background:rgba(44,182,125,0.15);
-color:#2cb67d;
-margin-bottom:8px;
-}
-.cta{
-position:sticky;
-bottom:0;
-background:#0b0b14;
-padding:12px;
-border-top:1px solid rgba(255,255,255,0.06);
-}
-.cta button{
-background:linear-gradient(90deg,#ffb86b,#ff7a90);
-color:#1a1a1a;
-}
+.badge{display:inline-block;padding:4px 8px;font-size:12px;border-radius:999px;background:rgba(44,182,125,0.15);color:#2cb67d;margin-bottom:8px;}
+.cta{position:sticky;bottom:0;background:#0b0b14;padding:12px;border-top:1px solid rgba(255,255,255,0.06);}
+.cta button{background:linear-gradient(90deg,#ffb86b,#ff7a90);color:#1a1a1a;}
 .small{font-size:12px;opacity:0.6;}
 </style>
 </head>
 <body>
-
 <div class="container">
 
 <div class="header">
@@ -114,10 +55,7 @@ color:#1a1a1a;
 <div class="title">기본 정보 입력</div>
 <input id="name" placeholder="이름" />
 <input id="birth" type="date" />
-<select id="gender">
-<option value="M">남성</option>
-<option value="F">여성</option>
-</select>
+<select id="gender"><option value="M">남성</option><option value="F">여성</option></select>
 <button onclick="runAll()">내 운명 분석하기</button>
 </div>
 
@@ -129,100 +67,70 @@ color:#1a1a1a;
 </div>
 
 <div class="grid">
-<div class="card">
-<div class="title">사주 분석</div>
-<div id="saju" class="result"></div>
+<div class="card"><div class="title">사주 분석</div><div id="saju" class="result"></div></div>
+<div class="card"><div class="title">토정비결</div><div id="tojeong" class="result"></div></div>
+<div class="card"><div class="title">별자리</div><div id="zodiac" class="result"></div></div>
+<div class="card"><div class="title">타로</div><div id="tarot" class="result"></div></div>
 </div>
 
-<div class="card">
-<div class="title">토정비결</div>
-<div id="tojeong" class="result"></div>
-</div>
-
-<div class="card">
-<div class="title">별자리</div>
-<div id="zodiac" class="result"></div>
-</div>
-
-<div class="card">
-<div class="title">타로</div>
-<div id="tarot" class="result"></div>
-</div>
-</div>
-
-<div class="card">
-<div class="title">인생 흐름 해석</div>
-<div id="flow" class="result"></div>
-</div>
-
-<div class="card" id="aff" style="display:none;">
-<div class="title">운을 보완하는 선택</div>
-<div class="small">당신의 흐름과 연결된 추천 아이템</div>
-<div id="affiliate"></div>
-</div>
+<div class="card"><div class="title">인생 흐름 해석</div><div id="flow" class="result"></div></div>
 
 </div>
 
-<div class="cta">
-<button onclick="scrollTopBtn()">다시 보기</button>
-</div>
-
+<div class="cta"><button onclick="scrollTopBtn()">다시 보기</button></div>
 </div>
 
 <script>
+
 function saju(name,birth){
 let d=new Date(birth);
 let y=d.getFullYear();
-return `${name}님의 사주는 안정과 변화가 공존하는 구조입니다.\n\n핵심 해석:\n현재 인생 흐름은 '재정렬 단계'이며 선택에 따라 방향이 크게 달라질 수 있습니다.`;
+
+return `${name}님의 사주 분석:\n\n[1] 타고난 기질\n겉으로는 안정적이지만 내면은 변화 욕구가 강한 구조입니다.\n\n[2] 현재 흐름\n지금은 기존 패턴이 흔들리는 재정렬 시기입니다.\n\n[3] 인간관계\n가까운 사람과의 관계에서 선택과 거리 조절이 중요해집니다.\n\n[4] 재물/일\n급격한 상승보다 점진적 누적 구조가 유리합니다.\n\n[5] 위험 구간\n감정 기반 결정이 손실로 이어질 수 있습니다.\n\n[6] 조언\n속도를 늦추고 방향을 재설계하는 것이 핵심입니다.`;
 }
 
 function tojeong(){
 let arr=["건(乾)","곤(坤)","태(泰)","비(否)","둔(屯)","몽(蒙)"];
 let g=arr[Math.floor(Math.random()*arr.length)];
-return `괘: ${g}\n\n해석:\n현재 상황은 변화 직전 단계로, 기다림과 결단 사이에 있습니다. 선택이 결과를 결정합니다.`;
+
+return `괘: ${g}\n\n[1] 의미\n이 괘는 변화 직전의 긴장 상태를 의미합니다.\n\n[2] 현재 상황\n겉으로는 안정이나 내부적으로는 균열이 진행 중입니다.\n\n[3] 흐름\n곧 선택의 결과가 명확히 드러나는 시점입니다.\n\n[4] 조언\n서두르지 말고 관찰 후 결정하는 것이 중요합니다.`;
 }
 
 function zodiac(){
-return `감정 흐름:\n현재는 안정과 불안이 동시에 존재하는 시기입니다. 내면 감정이 외부 상황보다 더 크게 작용합니다.`;
+return `[1] 성향\n감정과 직관이 강하게 작용하는 시기입니다.\n\n[2] 흐름\n외부보다 내부 감정 변화가 더 큰 영향을 줍니다.\n\n[3] 관계\n오해가 생기기 쉬우므로 표현을 명확히 해야 합니다.\n\n[4] 조언\n즉흥적인 판단은 피하는 것이 좋습니다.`;
 }
 
 function tarot(){
 let arr=["Fool","Magician","Sun","Tower","Star"];
 let c=arr[Math.floor(Math.random()*arr.length)];
-return `카드: ${c}\n\n해석:\n이 선택은 당신의 방향성을 결정하는 중요한 전환점입니다.`;
+
+return `카드: ${c}\n\n[1] 상징\n현재 선택은 방향성 자체를 바꾸는 요소입니다.\n\n[2] 해석\n기회와 위험이 동시에 존재하는 구간입니다.\n\n[3] 메시지\n지금의 결정은 이후 흐름에 강하게 영향을 줍니다.`;
 }
 
 function flow(){
 let v=Math.floor(Math.random()*100);
-return `10년 흐름 지수: ${v}\n\n해석:\n상승과 정체가 반복되는 구조이며, 지금은 변곡점 구간입니다.`;
+return `[10년 흐름]\n지수: ${v}\n\n[구조]\n상승과 정체가 반복되는 변곡 구조입니다.\n\n[해석]\n현재는 방향이 결정되기 직전 구간입니다.`;
 }
 
 function runAll(){
 let name=document.getElementById('name').value;
 let birth=document.getElementById('birth').value;
-if(!birth) return alert('생년월일 입력');
+if(!birth)return alert('입력 필요');
 
 document.getElementById('resultArea').classList.remove('hidden');
 
-// summary (가장 중요)
 document.getElementById('summary').innerText=
-"당신은 현재 중요한 선택의 갈림길에 있습니다.\n지금의 결정은 앞으로 3~6개월 흐름에 직접 영향을 줍니다.";
+"당신은 현재 중요한 인생의 재설계 구간에 있습니다.\n이 시기의 선택은 장기 흐름에 직접 영향을 줍니다.";
 
-// sections
 document.getElementById('saju').innerText=saju(name,birth);
 document.getElementById('tojeong').innerText=tojeong();
 document.getElementById('zodiac').innerText=zodiac();
 document.getElementById('tarot').innerText=tarot();
 document.getElementById('flow').innerText=flow();
-
-// affiliate reveal
-document.getElementById('aff').style.display="block";
-document.getElementById('affiliate').innerHTML=
-'<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 당신의 흐름을 강화하는 아이템 보기</a>';
 }
 
 function scrollTopBtn(){window.scrollTo({top:0,behavior:'smooth'});}
-</script>
 
+</script>
 </body>
 </html>
