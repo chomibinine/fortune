@@ -1,307 +1,224 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>운명의 나침반</title>
-  <!-- 음력/양력 변환을 위한 lunar-javascript 라이브러리 로드 -->
-  <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js"></script>
+<meta charset="UTF-8">
+<title>정통 사주 분석</title>
+
+<style>
+body {
+  margin:0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  text-align:center;
+}
+
+.container {
+  padding:40px;
+}
+
+h1 {
+  font-size:32px;
+}
+
+input, button {
+  padding:12px;
+  margin:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  background:#ffcc00;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.result {
+  margin-top:30px;
+  background:rgba(0,0,0,0.4);
+  padding:20px;
+  border-radius:12px;
+}
+
+.counter {
+  margin-top:20px;
+  font-size:14px;
+  opacity:0.8;
+}
+
+a.btn {
+  display:inline-block;
+  margin-top:20px;
+  padding:12px 20px;
+  background:#ffcc00;
+  color:#000;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
 </head>
+
 <body>
-  <!-- 앱이 마운트될 루트 엘리먼트 -->
-  <div id="oracle-portal-root"></div>
 
-  <script>
-    /* [시스템 전권 위임] NEURAL ORACLE v23.0 PREMIUM SAJU EDITION
-     * [Shadow DOM 적용] 블로그 및 깃허브 독립 실행 환경 구축
-     * [데이터 보존] 초년·중년·말년 12유형 및 모든 텍스트 데이터 100% 수록
-     * [수정 사항] 카운터 삭제 및 쿠팡 파트너스 수익 엔진 최적화
-     */
-    (function() {
-      var root = document.getElementById('oracle-portal-root');
-      var shadow = root.attachShadow({mode: 'open'});
-      
-      var state = { name: '', y: 1990, m: 1, d: 1, cal: 'solar', time: 'none' };
-      var currentYear = new Date().getFullYear();
-      
-      function $(id) { return shadow.getElementById(id); }
-      
-      // --- 1. 코어 디자인 (CSS) ---
-      var css = 
-        "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');" +
-        ":host { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2147483647; background: transparent; }" +
-        ".app-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #05070a; color: #adbac7; font-family: 'Pretendard', sans-serif; line-height: 1.8; overflow-y: auto; text-align: left; box-sizing: border-box; }" +
-        ".app-wrapper * { box-sizing: border-box; }" +
-        ".app-wrapper h1, .app-wrapper h2, .app-wrapper h3, .app-wrapper p { margin: 0; padding: 0; }" +
-        ".container { max-width: 650px; margin: 0 auto; padding: 20px 20px 140px; }" +
-        ".intro-box { text-align: center; padding: 50px 0 30px; border-bottom: 1px solid #1a1d23; margin-bottom: 30px; }" +
-        ".intro-box h1 { color: #00f2ff; font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; margin: 0; text-shadow: 0 0 20px rgba(0,242,255,0.4); }" +
-        ".intro-box p { color: #768390; font-size: 0.95rem; margin-top:10px; }" +
-        ".method-grid { display: grid; gap: 15px; margin-bottom: 40px; }" +
-        ".method-card { background: #0d1117; border: 1px solid #1a1d23; border-radius: 20px; padding: 25px; transition: 0.3s; cursor: pointer; }" +
-        ".method-card:hover { border-color: #00f2ff; transform: translateY(-3px); background:#111827; }" +
-        ".method-card h2 { font-size: 1.2rem; color: #fff; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }" +
-        ".method-card p { font-size: 0.9rem; color: #8b949e; margin: 0; line-height: 1.6; }" +
-        ".card { background: #0d1117; border: 1px solid #1a1d23; border-radius: 28px; padding: 30px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); }" +
-        "label { display: block; margin: 15px 0 8px; font-size: 0.8rem; color: #00f2ff; font-weight: 800; text-transform: uppercase; }" +
-        "input, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #1a1d23; background: #05070a; color: #fff; font-size: 1rem; outline: none; box-sizing: border-box; font-family: inherit; }" +
-        ".btn-row { display: flex; gap: 10px; margin-bottom: 15px; }" +
-        ".t-btn { flex: 1; padding: 14px; border-radius: 12px; background: #000; border: 1px solid #1a1d23; color: #4e5561; cursor: pointer; text-align: center; font-weight: 800; transition:0.2s; }" +
-        ".t-btn.on { background: #00f2ff; color: #000; border-color: #00f2ff; }" +
-        ".btn-run { background: #00f2ff; color: #000; border: none; padding: 22px; border-radius: 20px; width: 100%; font-weight: 900; font-size: 1.25rem; cursor: pointer; margin-top: 15px; box-shadow: 0 10px 20px rgba(0,242,255,0.2); transition:0.3s; font-family: inherit; }" +
-        ".btn-run:hover { background: #fff; color: #000; }" +
-        ".process-dashboard { background: linear-gradient(145deg, #0d1117, #05070a); border: 1px solid #30363d; padding: 30px; border-radius: 24px; margin-bottom: 50px; position: relative; overflow: hidden; }" +
-        ".process-dashboard::before { content: 'ANALYSIS METADATA'; position: absolute; top: 15px; right: 20px; font-size: 0.65rem; color: #4e5561; font-weight: 900; letter-spacing: 1px; }" +
-        ".process-dashboard h3 { color: #fff; font-size: 1.2rem; margin: 0 0 20px; font-weight: 900; border-bottom: 1px solid #30363d; padding-bottom: 10px; }" +
-        ".data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }" +
-        ".data-item { background: #000; border: 1px solid #1a1d23; padding: 15px; border-radius: 12px; font-size: 0.85rem; color: #adbac7; }" +
-        ".data-item b { color: #00f2ff; display: block; font-size: 1.1rem; margin-bottom: 5px; }" +
-        ".process-text { font-size: 0.95rem; color: #adbac7; line-height: 1.8; background: rgba(0,242,255,0.05); padding: 20px; border-radius: 12px; border-left: 3px solid #00f2ff; margin-top: 20px; }" +
-        ".report-sec { margin-bottom: 60px; opacity: 0; transform: translateY(20px); transition: 0.8s ease; }" +
-        ".report-sec.show { opacity: 1; transform: translateY(0); }" +
-        ".sec-t { font-size: 1.45rem; color: #fff; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }" +
-        ".sec-t::before { content: ''; width: 6px; height: 22px; background: #ffd700; border-radius: 10px; }" +
-        ".sum-box { background: rgba(255,215,0,0.05); padding: 25px; border-radius: 18px; font-weight: 800; color: #ffd700; margin-bottom: 25px; font-size: 1.15rem; border: 1px solid rgba(255,215,0,0.2); line-height: 1.6; word-break: keep-all; }" +
-        ".det-text { font-size: 1.05rem; color: #e6edf3; line-height: 1.85; text-align: left; word-break: keep-all; letter-spacing: -0.01em; }" +
-        ".det-text p { margin-top: 0; margin-bottom: 24px; }" +
-        ".lucky-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }" +
-        ".l-item { background: #05070a; border: 1px solid #1a1d23; padding: 15px; border-radius: 15px; text-align: center; font-size: 0.85rem; color: #768390; }" +
-        ".l-item b { display: block; color: #fff; font-size: 1.15rem; margin-top: 8px; }" +
-        ".nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #0d1117; border-top: 1px solid #1a1d23; padding: 10px 0; z-index: 1000000; max-width: 650px; margin: 0 auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }" +
-        ".nav-i { flex: 1; text-align: center; color: #4e5561; cursor: pointer; font-size: 0.65rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.2s; }" +
-        ".nav-i.on { color: #00f2ff; transform: translateY(-2px); }" +
-        ".nav-i b { font-size: 1.4rem; line-height: 1; }" +
-        "#loader { display: none; text-align: center; padding: 120px 20px; }" +
-        ".p-fill { width: 0%; height: 3px; background: #00f2ff; transition: 0.2s; box-shadow: 0 0 20px #00f2ff; margin-top: 25px; }" +
-        ".tarot-pick { display: flex; justify-content: center; gap: 15px; margin: 40px 0; }" +
-        ".t-card { width: 85px; height: 140px; background: linear-gradient(135deg, #1a1d23, #000); border: 2px solid #00f2ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }" +
-        ".t-card:hover { transform: translateY(-15px); border-color: #ffd700; box-shadow: 0 15px 30px rgba(255,215,0,0.4); }" +
-        ".coupang-box { margin-top: 50px; border: 1px solid #00f2ff; padding: 35px; border-radius: 30px; text-align: center; background: linear-gradient(180deg, #0d1117, #000); }" +
-        ".btn-buy { background: #00f2ff; color: #000; padding: 18px 30px; border-radius: 15px; text-decoration: none; font-weight: 900; display: inline-block; font-size: 1.15rem; margin-top: 25px; box-shadow: 0 10px 20px rgba(0,242,255,0.25); transition: 0.3s; }" +
-        ".btn-buy:hover { background: #fff; transform: scale(1.02); }" +
-        ".coupang-disclaimer { font-size: 0.75rem; color: #4e5561; margin-top: 20px; line-height: 1.5; font-weight: normal; }";
+<div class="container">
 
-      // --- 2. 방대한 심층 텍스트 데이터베이스 ---
-      var gans = ["甲(갑)", "乙(을)", "丙(병)", "丁(정)", "戊(무)", "己(기)", "庚(경)", "辛(신)", "壬(임)", "癸(계)"];
-      var jis = ["子(자)", "丑(축)", "寅(인)", "卯(묘)", "辰(진)", "巳(사)", "午(오)", "未(미)", "申(신)", "酉(유)", "戌(술)", "亥(해)"];
-      var hanjaToKor = { '甲':'갑', '乙':'을', '丙':'병', '丁':'정', '戊':'무', '己':'기', '庚':'경', '辛':'신', '壬':'임', '癸':'계', '子':'자', '丑':'축', '寅':'인', '卯':'묘', '辰':'진', '巳':'사', '午':'오', '未':'미', '申':'신', '酉':'유', '戌':'술', '亥':'해' };
+<h1>🔮 정통 사주 분석</h1>
 
-      var ganTraits = {
-        "甲": "하늘을 향해 수직으로 뻗어나가는 거목의 기질입니다. 잔머리를 굴리기보다는 정공법으로 승부하며, 한 번 결심한 일은 절대 굽히지 않는 리더십이 귀하의 가장 큰 매력입니다.",
-        "乙": "바람에 흔들리되 절대 꺾이지 않는 넝쿨과 같습니다. 놀라운 환경 적응력과 유연함을 타고났으며, 부드러운 미소 속에 감춰진 끈질긴 생명력이 귀하를 최후의 승자로 만듭니다.",
-        "丙": "세상을 밝게 비추는 한낮의 태양처럼, 주변 사람들에게 따뜻한 에너지를 나누어주는 분입니다. 뒤끝이 없고 호탕하며, 열정적으로 목표를 향해 달려가는 모습이 눈부십니다.",
-        "丁": "어둠을 은은하게 밝히는 촛불처럼, 사람의 마음을 꿰뚫어 보는 통찰력이 있습니다. 겉보기엔 조용해 보여도 내면에는 세상을 바꿀 만한 따뜻하고 강렬한 불꽃이 숨어 있습니다.",
-        "戊": "모든 것을 묵묵히 품어주는 거대한 산과 같습니다. 듬직하고 신용을 중시하며, 사소한 것에 흔들리지 않는 넓은 스케일 덕분에 주변 사람들이 귀하에게 깊게 의지합니다.",
-        "己": "씨앗을 길러내는 비옥한 대지처럼, 사람을 품고 키워내는 다정다감한 성품을 지녔습니다. 포용력이 넓으면서도 실속을 차릴 줄 알며, 상황의 밸런스를 잡는 지혜가 탁월합니다.",
-        "庚": "제련되지 않은 강인한 무쇠처럼, 의리와 결단력이 남다릅니다. 한 번 마음먹은 일은 어떤 난관이 있어도 끝까지 밀어붙이는 불굴의 의지가 귀하의 가장 강력한 무기입니다.",
-        "辛": "정교하게 세공된 눈부신 보석과도 같습니다. 예민하고 섬세한 감각을 지니셨으며, 매사에 완벽을 추구하는 철저함 덕분에 어느 분야에서든 최고 전문가로 인정받게 됩니다.",
-        "壬": "도도하게 흐르는 넓은 바다처럼, 지혜가 깊고 속을 쉽게 알 수 없는 신비로운 매력이 있습니다. 포용력이 넓으면서도 상황에 따라 유연하게 대처하는 지략이 아주 뛰어납니다.",
-        "癸": "만물을 촉촉하게 적시는 봄비처럼, 끊임없이 샘솟는 지식욕과 창의적인 아이디어를 품고 있습니다. 뛰어난 감수성으로 사람들의 닫힌 마음을 다독여주는 따뜻한 분입니다."
-      };
+<input type="date" id="birth">
+<input type="time" id="time">
+<br>
+<button onclick="analyze()">내 사주 보기</button>
 
-      var jiTraits = {
-        "子": "한겨울의 응축된 지혜", "丑": "봄을 준비하는 끈기와 인내", "寅": "초봄의 폭발적인 생명력", "卯": "봄날의 만개하는 도화 기운", 
-        "辰": "만물을 싹틔우는 변화무쌍함", "巳": "초여름의 왕성한 열정", "午": "한여름의 뜨거운 사교성", "未": "결실을 맺기 전의 치밀함", 
-        "申": "초가을의 단호한 결단력", "酉": "가을의 날카로움과 섬세함", "戌": "만물을 거두는 책임감", "亥": "겨울로 들어가는 깊은 사고력"
-      };
+<div class="counter">
+👀 오늘 방문자: <span id="today"></span> / 총 방문자: <span id="total"></span>
+</div>
 
-      var ohaengModern = {
-        "목(木)": "기획력과 성장 지향적 마인드를 바탕으로, 기획, 교육, IT, 창작 등 무에서 유를 창조해 내는 분야에서 재물을 크게 거두어들입니다.",
-        "화(火)": "타고난 표현력과 확산력을 바탕으로, 마케팅, 방송, 예술, 서비스업 등 사람들과 에너지를 교류하는 분야에서 확실한 수익을 창출합니다.",
-        "토(土)": "신뢰와 안정감을 무기로, 부동산, 금융 중개, 시스템 구축 등 사람과 자산을 안전하게 연결하고 관리하는 분야에서 흔들림 없는 부를 축적합니다.",
-        "금(金)": "날카로운 분석력과 이성적인 판단력을 바탕으로, 금융, 컨설팅, 투자, 정밀 기술 등 원칙과 팩트가 중요한 곳에서 폭발적인 성과를 냅니다.",
-        "수(水)": "경계 없는 유연한 사고를 바탕으로, 무역, 유통, 심층 연구, 철학 등 변화무쌍한 분야에서 남들이 보지 못하는 돈맥을 정확히 짚어냅니다."
-      };
+<div class="result" id="result"></div>
 
-      var expandDB = {
-        sajuMethod: "<p><b>[정통 사주 명리학의 결과 도출 근거]</b></p><p>본 카운슬링은 수천 년간 축적된 동양 천문학의 결정체인 명리학(命理學)의 '자평진전' 및 '적천수'의 십간십이지 이론을 현대적 알고리즘으로 완벽히 복원하여 결과를 도출합니다. 귀하가 태어난 연월일시의 태양의 위치(24절기 황경 좌표)를 추적하여 입체적인 우주 에너지를 8개의 한자(사주팔자)로 환산합니다.</p><p>단순한 통계나 미신이 아닙니다. 태어난 계절이 부여하는 월지(月支)의 조후(온도와 습도)를 분석하고, 일간(日干)이라는 귀하의 영혼의 중심 코어가 주변의 오행(목, 화, 토, 금, 수)과 어떻게 상호작용하는지 생극제화(生剋制化)의 원리로 역학적 계산을 수행합니다. 이를 통해 귀하의 선천적 뇌구조, 스트레스 반응 기제, 그리고 현대 자본주의 사회에서 어떤 방식으로 사회적 가치를 창출해야 가장 유리한지, 그 고유한 '생존 메뉴얼'을 과학적인 태도로 짚어냅니다.</p>",
-        tojeongMethod: "<p><b>[토정비결 144괘 수리 알고리즘의 도출 근거]</b></p><p>본 리포트는 조선 명종 시대 토정 이지함 선생이 집대성한 정통 역학서 '토정비결'의 작괘(作卦) 원리를 디지털 수학 모델로 재현한 결과입니다. 귀하가 태어난 연도의 태세(천기), 생월(지기), 생일(인기)의 고유 상수를 추출하고, 이를 올해의 세운(歲運) 상수와 결합하여 144개의 주역(周易) 괘상 중 하나를 도출하는 정교한 연산 과정을 거칩니다.</p><p>토정비결은 단순한 미래 예언이 아니라, 우주의 시간적 흐름(Time) 속에서 귀하가 처한 현재의 위치(Space)와 맺어야 할 인간관계(Human)의 최적 타이밍을 알려주는 처세의 학문입니다. 상괘, 중괘, 하괘의 조합을 통해 한 해의 운기가 팽창하는 시기와 수축하는 시기를 정확히 파악하여, 무리한 투자를 피하고 기회가 왔을 때 과감히 베팅할 수 있는 전략적 인사이트를 제공합니다.</p>",
-        starMethod: "<p><b>[서양 점성학(Astrology)의 네이탈 차트 도출 근거]</b></p><p>본 분석은 고대 바빌로니아에서 시작되어 헬레니즘 시대를 거쳐 완성된 서양 점성술의 천체 투영 기법을 사용합니다. 귀하가 첫 숨을 들이마신 정확한 순간, 태양계의 10대 행성(태양, 달, 수성, 금성, 화성, 목성, 토성, 천왕성, 해왕성, 명왕성)이 황도 12궁(Zodiac)의 어느 좌표에 위치해 있었는지를 기하학적으로 역산하여 운명의 지도를 그립니다. 태양 별자리는 귀하의 표면적 자아와 인생의 궁극적 목표를, 달 별자리는 무의식적 감정 패턴을 나타냅니다. 본 리포트는 행성 간의 각도(Aspect)가 만들어내는 에너지의 긴장과 조화를 심리학적 관점(칼 융의 분석심리학)으로 재해석하여, 귀하 내면에 잠재된 모순을 해결하고 가장 매력적인 자본으로 승화시킬 수 있는 우주적 조언을 1000자 이상의 심층 텍스트로 전달합니다.</p>",
-        tarotMethod: "<p><b>[타로 동시성 원리와 아키타입 도출 근거]</b></p><p>본 카운슬링은 단순한 무작위 추출이 아닙니다. 스위스의 심리학자 칼 구스타프 융이 제창한 '동시성(Synchronicity)' 이론, 즉 의미 있는 우연의 일치라는 양자역학적 심리 원리에 기반합니다. 귀하가 현재 안고 있는 딜레마나 불안 요소에 깊이 집중하는 순간, 귀하의 무의식적 파동이 디지털 난수 발생기에 미세한 영향을 미쳐 가장 적합한 아키타입(원형)의 카드를 수면 위로 끌어올립니다. 선택된 메이저 아르카나 카드는 귀하의 내면 깊은 곳에서 이미 알고 있는 정답을 시각적 상징(Symbol)으로 투영해 주는 거울입니다. 우리는 이 상징들을 해체하고 현대인의 라이프스타일에 맞게 재조립하여, 꽉 막힌 현재의 상황을 타개할 심리적 솔루션과 구체적인 행동 지침을 방대한 텍스트로 풀어냅니다. 카드에 담긴 우주의 조언을 통해 내면의 직관을 깨워보십시오.</p>",
-        
-        lifetimeBase: function(seed) {
-          var intro = "<p>사주 명리학에서 인생은 봄, 여름, 가을, 겨울의 사계절을 지나는 거대한 자연의 순환과 같습니다. 초년(태어나서 30대까지)은 씨앗을 뿌리고 비바람을 견디는 봄이며, 중년(30대~50대)은 뜨거운 태양 아래 에너지를 폭발시켜 잎을 무성하게 피우는 여름입니다. 그리고 말년(50대 이후)은 그동안의 치열했던 노력의 결실을 거두어들이고 편안히 곳간에 쌓아두는 황금빛 가을과 고요한 겨울을 상징합니다. 귀하의 명식에 각인된 인생 전반의 거시적인 운의 흐름을 초년, 중년, 말년으로 나누어 심층 해독해 드립니다.</p>";
-          var type = seed % 4; var variant = (seed + 11) % 3;
-          var solutions = [
-            [ // Type 0: 대기만성형
-              "<p><b>[초년운]</b> 일찍부터 비범한 재능을 품고 태어났으나, 이를 온전히 알아주는 환경을 만나기까지 다소 시간이 걸리는 운기입니다. 남들보다 생각의 깊이가 남달라 때로는 군중 속의 고독을 느끼기도 했으며, 여러 번의 시행착오를 겪으며 내면의 뿌리를 깊고 단단하게 내리는 시기입니다.</p><p><b>[중년운]</b> 30대 중반을 기점으로 운명의 판도가 완전히 뒤바뀝니다. 그동안 축적된 경험과 뼈아픈 내공이 비로소 시대의 흐름과 완벽히 맞아떨어지며, 폭발적인 상승세를 타기 시작합니다. 이때 맺은 귀인과의 인연이 귀하를 더 높은 무대로 이끌어 줍니다.</p><p><b>[말년운]</b> 전형적인 대기만성(大器晩成)의 명식입니다. 중년에 쌓아 올린 견고한 부와 명예가 말년으로 갈수록 눈덩이처럼 불어납니다. 노후에는 재물적 궁핍함이 전혀 없이, 가족과 지인들의 존경을 한 몸에 받으며 여유롭고 풍요로운 황혼을 즐기게 됩니다.</p>",
-              "<p><b>[초년운]</b> 남들이 쉽게 걷는 평범한 길보다는, 스스로 가시밭길을 자처하며 인생의 진리를 탐구하는 고독한 시기였습니다. 당장의 성과가 보이지 않아 조급할 수 있었으나, 이 시기의 모든 시련은 당신의 그릇을 거대하게 키우기 위한 우주의 철저한 담금질이었습니다.</p><p><b>[중년운]</b> 때가 이르러 마침내 당신의 진가를 알아보는 강력한 조력자들이 하나둘 곁으로 모여듭니다. 40대를 전후하여 직업적, 경제적인 면에서 극적인 반전이 일어나며, 남들은 상상하기 힘든 가파른 속도로 사회적 지위를 확립하게 됩니다.</p><p><b>[말년운]</b> 초년의 고생이 무색할 만큼 황금빛 결실을 맺는 화려한 말년이 기다리고 있습니다. 일찍부터 다져온 단단한 멘탈 덕분에 그 어떤 풍파에도 흔들리지 않으며, 거대한 자산과 깊은 지혜를 바탕으로 주변에 덕을 베푸는 존경받는 어른으로 자리매김합니다.</p>",
-              "<p><b>[초년운]</b> 호기심이 많고 다방면에 재능이 있어 한곳에 정착하기보다는 잦은 이동과 변화를 경험하는 시기입니다. 겉보기엔 방황하는 듯 보였으나, 이 시기에 흡수한 다양한 지식과 인맥은 훗날 대체 불가능한 융합형 인재로 거듭나는 핵심 자양분이 되었습니다.</p><p><b>[중년운]</b> 분산되었던 에너지가 하나의 뚜렷한 목표를 향해 집중되며, 특정 분야에서 압도적인 장인(Master)의 경지에 오르게 됩니다. 당신만의 확고한 전문성과 브랜드가 구축되며, 경제적인 보상과 사회적 인정이 동시에 폭포수처럼 쏟아집니다.</p><p><b>[말년운]</b> 치열했던 경쟁에서 한걸음 물러나, 스스로 일궈낸 거대한 성채 안에서 완벽한 평화와 자유를 누리게 됩니다. 재물운이 마르지 않는 샘물처럼 이어지며, 취미와 예술, 여행을 마음껏 즐기는 진정한 의미의 경제적/시간적 자유를 성취합니다.</p>"
-            ],
-            [ // Type 1: 자수성가형
-              "<p><b>[초년운]</b> 일찍부터 부모나 타인의 그늘을 벗어나 강렬한 자립심을 발휘하는 운기입니다. 온실 속 화초처럼 자라기보다는 거친 들판에서 스스로 생존하는 법을 터득하며, 이 시기에 길러진 강력한 생활력이 인생 전반을 이끌어가는 무적의 엔진이 됩니다.</p><p><b>[중년운]</b> 타인에게 의지하지 않고 오직 자신의 능력과 피나는 노력으로 무(無)에서 유(有)를 창조해 냅니다. 수많은 경쟁자들을 물리치고 업계의 중심에 서게 되며, 스스로의 땀방울로 일구어낸 탄탄한 재력과 권력을 거머쥐게 되는 황금기입니다.</p><p><b>[말년운]</b> 자수성가(自手成家)의 완벽한 표본입니다. 중년까지 앞만 보고 달려온 보상으로, 말년에는 흔들림 없는 거대한 부의 제국을 완성합니다. 자손들 또한 당신의 강인한 DNA를 물려받아 가문 전체가 번창하고 평안을 누리는 길운입니다.</p>",
-              "<p><b>[초년운]</b> 주어진 환경의 결핍이 오히려 당신을 더 강하게 만드는 강력한 성장 동력으로 작용했습니다. 남들보다 불리한 조건 속에서도 절대 굴복하지 않는 오기와 승부욕을 불태웠으며, 일찍부터 세상의 냉혹한 현실을 깨우친 성숙함을 보였습니다.</p><p><b>[중년운]</b> 뼈아픈 실패마저도 성공의 디딤돌로 삼는 진정한 오뚝이의 시기입니다. 30대 후반부터 사업적 수완이나 전문적인 능력이 만개하며, 위기를 기회로 뒤집는 놀라운 수완을 발휘하여 남들이 부러워할 만한 막대한 재물을 창출해 냅니다.</p><p><b>[말년운]</b> 더 이상 돈이나 명예에 쫓기지 않는 여유로운 자산가의 삶을 살아갑니다. 젊은 시절의 치열했던 무용담은 후배들에게 귀감이 되며, 탄탄한 부동산이나 시스템 수익을 바탕으로 경제적 구애 없이 세상을 유람하는 평온한 노후가 펼쳐집니다.</p>",
-              "<p><b>[초년운]</b> 남에게 기대는 것을 태생적으로 싫어하여, 일찍부터 자신만의 독자적인 영역을 구축하기 위해 치열하게 분투했습니다. 비록 몸은 고단했을지라도 멘탈만큼은 그 누구보다 강인하게 단련되는 가치 있는 예방접종의 시기였습니다.</p><p><b>[중년운]</b> 그동안 갈고닦은 실력에 불이 붙어 거침없는 확장과 성장을 이룩합니다. 강력한 추진력과 카리스마로 주변을 압도하며 리더의 자리에 오르고, 한 번 들어온 재물은 절대 밖으로 새어나가지 않게 꽉 틀어쥐는 완벽한 금전 운용을 보여줍니다.</p><p><b>[말년운]</b> 젊은 시절 쏟은 피와 땀이 마침내 보석으로 변하여 돌아옵니다. 물질적인 성취는 물론이고, 주변 사람들에게 아낌없이 지혜를 나누어주며 존경받는 어른으로 존대 받게 됩니다. 육체와 정신이 모두 건강한 수복강녕(壽福康寧)의 말년입니다.</p>"
-            ],
-            [ // Type 2: 평탄안정형
-              "<p><b>[초년운]</b> 부모님이나 조상의 두터운 덕을 입어 큰 풍파 없이 평탄하고 무난하게 성장하는 맑은 운기입니다. 모난 곳 없는 둥글둥글한 성품 덕분에 주변 사람들의 사랑과 지원을 듬뿍 받으며, 안정적인 환경에서 순조롭게 학업이나 기초를 다집니다.</p><p><b>[중년운]</b> 롤러코스터 같은 극적인 반전보다는 계단을 오르듯 착실하고 꾸준하게 자산을 증식시키는 시기입니다. 조직 내에서 탄탄한 신뢰를 얻어 안정적인 승진을 거듭하거나, 리스크가 적은 사업을 견실하게 운영하여 재물의 창고를 차곡차곡 채워갑니다.</p><p><b>[말년운]</b> 명예와 부를 다 갖추었음에도 절대 교만하지 않아 평온하기 그지없는 아름다운 여생이 펼쳐집니다. 재산이 헛되이 흩어지는 일 없이 고스란히 모이며, 사랑하는 가족들과 함께 다툼 없이 온화하고 여유로운 황혼의 행복을 맘껏 누리게 됩니다.</p>",
-              "<p><b>[초년운]</b> 따뜻한 온실 속에서 정서적인 안정감을 듬뿍 느끼며 자라난 운입니다. 타고난 인덕(人德) 덕분에 학업이나 진로를 결정함에 있어 훌륭한 스승이나 귀인의 도움을 쉽게 받아, 남들보다 훨씬 수월하게 첫 단추를 꿰게 됩니다.</p><p><b>[중년운]</b> 인생의 거센 파도를 능숙하게 비켜가는 지혜를 발휘하여 순조로운 성공 가도를 달립니다. 위험한 투자나 무리한 확장을 피하고, 본인의 페이스에 맞춰 안전하게 커리어와 자산을 불려 나가며 평온하고도 남부럽지 않은 중년을 보냅니다.</p><p><b>[말년운]</b> 물이 흘러 바다에 이르듯 자연스럽고 순리적인 삶의 완성입니다. 평생 베풀며 살아온 선업이 쌓여 노후에는 어디를 가도 환영받으며, 넉넉한 곳간을 열어 사회나 후학에게 덕을 베푸는 존경스럽고 평화로운 삶을 영위하게 됩니다.</p>",
-              "<p><b>[초년운]</b> 주어진 규칙을 잘 따르고 성실함을 무기로 삼아 일찍부터 윗사람들의 총애를 독차지하는 시기입니다. 모험보다는 안정을 추구하는 기질 덕분에 큰 굴곡 없이 기초 공사를 튼튼하게 마무리지으며 사회에 진출할 탄탄한 채비를 갖춥니다.</p><p><b>[중년운]</b> 폭발적이지는 않으나 결코 무너지지 않는 철옹성 같은 커리어를 구축합니다. 속한 조직이나 분야에서 절대 없어서는 안 될 핵심 인재(Key-man)로 성장하며, 세월이 흐를수록 그 가치와 연봉이 비례하여 꾸준히 우상향하는 기분 좋은 운기입니다.</p><p><b>[말년운]</b> 수십 년간 묵묵히 쌓아 올린 공로를 인정받아 명예롭고 박수받는 은퇴를 맞이합니다. 노년기에는 재물에 대한 큰 욕심을 부리지 않아도 저절로 금전이 융통되며, 마음 맞는 지인들과 교류하며 정신적인 만족감이 극대화되는 시기를 보냅니다.</p>"
-            ],
-            [ // Type 3: 개척자형
-              "<p><b>[초년운]</b> 기존의 낡은 틀과 억압을 강하게 거부하는 비범한 반항아적 기질을 타고났습니다. 남들이 정해놓은 평범한 궤도를 일찍이 탈선하여, 아무도 가지 않은 미지의 길을 향해 겁 없이 뛰어드는 대담하고도 다이내믹한 10~20대를 보냅니다.</p><p><b>[중년운]</b> 위기와 기회가 폭풍처럼 교차하는 스펙터클한 시기입니다. 여러 번의 극적인 반전을 경험하며, 어느 순간 기존 업계의 판도를 완전히 뒤엎어버리는 파괴적인 혁신으로 초대박을 터뜨리게 됩니다. 평범한 성공을 넘어선 시대의 아이콘이 될 자질이 있습니다.</p><p><b>[말년운]</b> 치열하게 세상을 바꾼 개척자에게 주어지는 완벽한 자유의 시간입니다. 누구의 간섭도 받지 않는 유유자적한 백만장자로서, 남은 여생은 틀에 얽매이지 않고 전 세계를 무대로 자유롭게 여행하며 영혼의 해방을 만끽하는 화려한 삶을 완성합니다.</p>",
-              "<p><b>[초년운]</b> 솟구치는 상상력과 엉뚱한 호기심으로 늘 주변 사람들을 놀라게 만드는 비범한 아이였습니다. 남들의 시선에 갇히지 않고 본인만의 강렬한 개성과 철학을 뾰족하게 다듬어 나가며, 미래의 엄청난 파장을 예고하는 씨앗을 품고 자랐습니다.</p><p><b>[중년운]</b> 당신의 독특한 발상이 마침내 시대의 트렌드와 조우하며 상상 이상의 잭팟을 터뜨립니다. 남들은 기피하는 해외 시장이나 완전히 생소한 신규 사업 분야에서 압도적인 선점 효과를 거두며, 거침없는 기세로 엄청난 부와 권력을 움켜쥐게 됩니다.</p><p><b>[말년운]</b> 일찌감치 속세의 경쟁을 졸업하고 경제적 자유의 최정점에 올라섭니다. 후배들에게 전설적인 명성과 영감을 남긴 채, 본인은 자연을 벗 삼거나 고상한 예술적 취미에 심취하며 그 누구보다 다채롭고 낭만적인 노년을 장식하게 됩니다.</p>",
-              "<p><b>[초년운]</b> 태어날 때부터 피 끓는 승부욕과 강렬한 아우라를 지녀 어디서든 눈에 띄는 존재였습니다. 남 밑에 머무는 것을 견디지 못해 일찍부터 수많은 도전과 실패를 경험하며, 야생의 감각을 날카롭게 벼리는 치열한 훈련의 시간을 가졌습니다.</p><p><b>[중년운]</b> 그동안 갈고닦은 야성(野性)이 폭발하며 기존의 판을 뒤엎고 새로운 규칙을 창조해 냅니다. 큰 리스크를 기꺼이 감수하고 던진 과감한 승부수가 완벽하게 적중하며, 한 시대를 풍미하는 거대한 재물과 압도적인 위상을 단숨에 거머쥡니다.</p><p><b>[말년운]</b> 젊은 시절의 파란만장했던 전투를 영광스러운 무용담으로 남긴 채 명예의 전당에 오릅니다. 재물은 차고 넘치며 정신은 맑고 투명해져, 세속의 욕망을 초월하여 진정한 영적 깨달음과 평안을 얻는 고차원적인 철학자의 노년을 맞이하게 됩니다.</p>"
-            ]
-          ];
-          return intro + solutions[type][variant];
-        },
-        wealthBase: function(seed) {
-          var intro = "<p>현대 자본주의 사회에서 부의 축적은 단순히 운이 좋아서 일어나는 현상이 아닙니다. 이는 본인이 타고난 기질적 파동과 세상의 돈이 흘러가는 파동이 완벽하게 공명할 때 발생하는 폭발적인 에너지의 결과물입니다.</p>";
-          var type = seed % 4;
-          var solutions = [
-            "<p>단기적인 캐시플로우에 집착하기보다 3~5년 뒤를 내다보는 장기 자산 구축에 에너지를 집중해야 합니다. 무형의 자산이 훗날 거대한 형태의 실물 자산으로 변환되는 '연금술'의 에너지가 강력하게 내재되어 있습니다.</p>",
-            "<p>당신의 재물운은 사람과의 연결고리(네트워크)에서 폭발적으로 증폭됩니다. 혼자서 모든 것을 짊어지려 하지 말고, 이익을 타인과 기꺼이 나누는 '상생의 투자'를 지향할 때 더 큰 부가 돌아오는 명식입니다.</p>",
-            "<p>무엇보다 중요한 것은 철저한 '리스크 관리와 시스템의 구축'입니다. 데이터에 근거하여 보수적으로 자산을 운용하되, 한 번 확신이 선 곳에는 흔들림 없이 자본을 밀어넣는 우직함이 부를 만듭니다.</p>",
-            "<p>귀하의 재물운은 낯설고 새로운 환경에 노출될 때 가장 크게 요동치며 상승합니다. 시대의 흐름을 읽고 과감하게 새로운 트렌드나 이종 산업에 발을 담가보십시오. '변화와 혁신'이 곧 당신의 막대한 금맥입니다.</p>"
-          ];
-          return intro + solutions[type];
-        },
-        healthBase: function(seed) {
-          return "<p>인체의 건강은 단순히 질병이 없는 상태를 넘어, 신체적, 정신적, 영적 에너지가 완벽한 균형을 이루어 최상의 퍼포먼스를 낼 수 있는 '동적 평형' 상태를 의미합니다. 귀하는 책임감이 강하고 완벽을 추구하는 성향 때문에 뇌 신경계의 피로가 먼저 누적되는 패턴을 보입니다. 의도적인 단절과 질 높은 수면을 통해 생체 리듬을 복구해야 운의 활로도 함께 열립니다.</p>";
-        },
-        loveBase: function(seed) {
-          return "<p>인간관계의 본질은 서로 다른 우주가 만나 고유한 주파수를 맞추어가는 경이롭고도 복잡한 과정입니다. 억지로 인연의 끈을 잇기 위해 에너지를 낭비하는 것은 본연의 빛을 흐리게 만듭니다. 관계의 양적인 팽창보다는 영혼의 깊은 곳까지 교감할 수 있는 '질적인 밀도'에 집중하십시오.</p>";
-        }
-      };
+</div>
 
-      var tojeongDB = [
-        { h: "春山滿花 蝶自來尋 (춘산만화 첩자래심)", d1: "봄 동산에 꽃이 만발하니 나비가 스스로 찾아오는 대길의 형국입니다. 억지로 애쓰지 않아도 당신의 능력을 알아본 귀인과 재물이 자연스럽게 모여드는 매우 아름다운 운기입니다.", d2: "상반기에는 그동안 준비했던 일들을 다듬어 세상에 선보일 준비를 마치십시오. 하반기부터는 노력의 결실이 눈에 띄게 나타나며, 뜻밖의 큰 기회를 거머쥐게 됩니다." },
-        { h: "旱天降雨 萬物蘇生 (한천강우 만물소생)", d1: "오랜 가뭄 끝에 단비가 내려 만물이 소생하듯, 그동안 답답했던 자금 흐름이나 정체되었던 인간관계가 시원하게 뚫리는 놀라운 한 해가 될 것입니다. 삶 전반에 생기와 활력이 솟구칩니다.", d2: "새로운 목표를 세우고 과감히 씨앗을 뿌리십시오. 가을로 갈수록 문서운(계약, 취업, 이사)이 강력해지니 중요한 결정은 하반기를 전후하여 내리시는 것이 좋습니다." },
-        { h: "舟行順風 萬里無雲 (주행순풍 만리무운)", d1: "순풍에 돛을 달고 배를 띄우니 구름 한 점 없는 맑은 날씨입니다. 장애물이 걷히고 모든 일이 계획대로 순조롭게 풀려나가는 만사형통의 운기이니, 평소 주저했던 목표에 과감히 도전하십시오.", d2: "직장이나 사업에서 기대 이상의 성과를 내어 명예가 크게 높아집니다. 다만 모든 것이 너무 잘 풀리다 보니 자칫 교만해질 수 있으니, 주변에 베풀고 겸손을 유지하는 것이 비결입니다." },
-        { h: "明월출운 처처생광 (명월출운 처처생광)", d1: "밝은 달이 구름을 벗어나니 곳곳이 빛나는 형상입니다. 마음고생을 하던 일들이 마침내 해결의 실마리를 찾게 되고, 구설수는 맑게 씻겨 내려가 당신의 진가가 빛을 발하게 됩니다.", d2: "올해의 핵심 키워드는 '명예와 승진'입니다. 자격을 증명하는 시험이나 중요한 프로젝트에서 승전보를 울리게 됩니다. 특히 하반기에 귀 반가운 소식이 들려올 것입니다." }
-      ];
+<script>
 
-      var starTraits = {
-        "양": "개척자 정신이 빛나며, 한 번 꽂힌 일에는 무서운 집중력을 보여주는 불꽃 같은 열정의 소유자입니다.", "황소": "안정감과 미적 감각이 매우 뛰어납니다. 성실한 성향으로 주변 사람에게 큰 평안을 주는 매력이 있습니다.", "쌍둥이": "호기심이 넘치고 소통 능력이 탁월합니다. 트렌드를 가장 먼저 읽어내며 지적인 대화를 즐깁니다.", "게": "깊은 공감 능력과 모성애를 지녔습니다. 타인의 상처를 어루만지는 따뜻함으로 널리 사랑받습니다.", "사자": "태양의 카리스마와 리더의 당당함을 갖췄습니다. 자신감 넘치는 호탕한 매력으로 무리를 이끕니다.", "처녀": "분석력이 뛰어나고 완벽을 추구합니다. 디테일을 짚어내는 섬세함은 귀하를 대체 불가한 존재로 만듭니다.", "천칭": "미적 감각이 탁월하고 밸런스를 맞출 줄 압니다. 우아하고 세련된 매너로 어디서든 환영받는 평화주의자입니다.", "전갈": "심연을 꿰뚫는 통찰과 불굴의 의지를 지녔습니다. 직관력이 매우 뛰어나며 한 번 맺은 인연은 끝까지 지킵니다.", "사수": "자유로운 영혼과 긍정적인 모험심이 넘칩니다. 넓은 세상을 탐험하고자 하는 열망이 귀하의 매력 자본입니다.", "염소": "정상을 향한 인내와 대기만성형 야망을 품고 있습니다. 묵묵히 산을 올라 결국 목표를 이루는 굳건함이 있습니다.", "물병": "혁신적인 발상과 독창적인 가치관을 지녔습니다. 기존의 틀을 깨고 더 나은 세상을 꿈꾸는 철학이 돋보입니다.", "물고기": "상상력 넘치는 감수성과 순수한 영혼의 소유자입니다. 편견 없이 세상을 바라보는 맑은 빛을 지녔습니다."
-      };
+// ---------------- 방문자 카운터 (localStorage)
+// ----------------
+let todayKey = new Date().toDateString();
 
-      var tarotDB = [
-        { n: "0. THE FOOL", s: "새로운 시작과 순수한 열정", d: "얽매임 없이 발걸음을 내디딜 때입니다. 계산하지 않는 열정이 큰 성공을 가져옵니다." },
-        { n: "1. THE MAGICIAN", s: "무에서 유를 창조하는 실행력", d: "당신 안에 잠든 모든 재능이 깨어나는 시기입니다. 당신의 기획력이 세상을 압도할 것입니다." },
-        { n: "2. THE HIGH PRIESTESS", s: "직관력과 내면의 지혜", d: "행동보다 관찰이 필요합니다. 조용히 내면의 목소리를 듣는다면 정답이 보일 것입니다." },
-        { n: "3. THE EMPRESS", s: "물질적 풍요와 정서적 만족", d: "풍요와 사랑이 가득한 운기입니다. 여유로운 아우라가 재물과 사람을 자석처럼 끌어당깁니다." },
-        { n: "4. THE EMPEROR", s: "강력한 리더십과 성공", d: "주도권을 쥐고 상황을 통제하십시오. 당신의 책임감이 결국 확고한 승리를 보장할 것입니다." },
-        { n: "10. WHEEL OF FORTUNE", s: "거부할 수 없는 운명적 변화", d: "인생의 큰 사이클이 전환됩니다. 흐름에 몸을 맡기면 당신을 더 높은 곳으로 안내할 것입니다." },
-        { n: "19. THE SUN", s: "완벽한 성공과 기쁨의 도래", d: "어둠이 걷히고 모든 것이 명쾌해집니다. 당신의 존재감이 가장 빛나는 시기이니 당당하게 나아가십시오." },
-        { n: "21. THE WORLD", s: "목표의 완성 및 새로운 시작", d: "긴 여정 끝에 완벽한 성취를 이룹니다. 이제 한 차원 높은 무대로 올라갈 완벽한 타이밍입니다." }
-      ];
+let total = localStorage.getItem("total") || 0;
+let today = localStorage.getItem(todayKey) || 0;
 
-      // --- 3. 핵심 로직 엔진 ---
-      function getOhaeng(gan) { if('甲乙'.includes(gan[0])) return '목(木)'; if('丙丁'.includes(gan[0])) return '화(火)'; if('戊己'.includes(gan[0])) return '토(土)'; if('庚辛'.includes(gan[0])) return '금(金)'; return '수(水)'; }
-      function getStarSign(m, d) { var dates = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22]; var signs = ["염소", "물병", "물고기", "양", "황소", "쌍둥이", "게", "사자", "처녀", "천칭", "전갈", "사수", "염소"]; return signs[d > dates[m - 1] ? m : m - 1]; }
+total++;
+today++;
 
-      // --- 4. 화면 렌더링 ---
-      window.renderPage = function(view) {
-        var bodyHTML = '<style>' + css + '</style><div class="app-wrapper" id="app-wrapper"><div class="container">';
-        if (view === 'home') {
-          bodyHTML += '<div class="intro-box"><h1>운명의 나침반</h1><p>천문 데이터 기반 프리미엄 운세 카운슬링</p></div>' +
-            '<div class="card"><label>대상자 성함</label><input type="text" id="ui-name" value="'+state.name+'" placeholder="성함을 입력하세요">' +
-            '<label>력 선택</label><div class="btn-row"><div id="s-btn" class="t-btn '+(state.cal==='solar'?'on':'')+'" onclick="window.updateCal(\'solar\')">양력</div><div id="l-btn" class="t-btn '+(state.cal==='lunar'?'on':'')+'" onclick="window.updateCal(\'lunar\')">음력</div></div>' +
-            '<label>생년월일</label><div class="btn-row"><select id="ui-y"></select><select id="ui-m"></select><select id="ui-d"></select></div>' +
-            '</div><div class="method-grid"><div class="method-card" onclick="window.executeFlow(\'saju\')"><h2>📜 정밀 사주 분석</h2><p>기질과 재물 흐름 상세 풀이</p></div>' +
-            '<div class="method-card" onclick="window.executeFlow(\'tojeong\')"><h2>🗓️ '+currentYear+'년 토정비결</h2><p>올해 상/하반기 승부처 제시</p></div>' +
-            '<div class="method-card" onclick="window.renderPage(\'star-view\')"><h2>✨ 서양 점성술</h2><p>당신의 매력 자본 분석</p></div>' +
-            '<div class="method-card" onclick="window.renderPage(\'tarot-pick\')"><h2>🃏 타로 무의식 스캔</h2><p>현재의 딜레마를 해결합니다.</p></div></div>';
-        } else if (view === 'star-view') {
-           bodyHTML += '<div class="intro-box"><h1>우주의 지문</h1><p>당신이 태어난 날 하늘의 지도를 선택하세요.</p></div>' +
-            '<div class="method-grid" style="grid-template-columns: repeat(3, 1fr);">' +
-            Object.keys(starTraits).map(function(s){return '<div class="method-card" style="padding:15px; font-size:0.85rem;" onclick="window.buildReport(\'star\',\''+s+'\')"><h2>'+s+'자리</h2></div>';}).join('') +
-            '</div><button class="btn-run" style="background:#1a1d23; color:#fff;" onclick="window.renderPage(\'home\')">돌아가기</button>';
-        } else if (view === 'tarot-pick') {
-          bodyHTML += '<div class="intro-box"><h1>무의식의 거울</h1><p>해결하고 싶은 문제를 떠올리며 카드를 고르십시오.</p></div><div class="tarot-pick">' + 
-            Array.from({length: 6}).map(function(){return '<div class="t-card" onclick="window.buildReport(\'tarot\')">🔮</div>';}).join('') + 
-            '</div><button class="btn-run" style="background:#1a1d23; color:#fff; margin-top:20px;" onclick="window.renderPage(\'home\')">돌아가기</button>';
-        } else if (view === 'result') {
-          bodyHTML += '<div id="loader"><h2>DECODING DESTINY...</h2><div class="p-fill" id="p-fill"></div></div><div id="res-content" style="display:none;"><div class="intro-box"><h1 id="res-title"></h1></div><div id="report-body"></div><button class="btn-run" style="background:#1a1d23; color:#fff; margin-top:40px;" onclick="window.renderPage(\'home\')">처음으로 돌아가기</button></div>';
-        }
-        bodyHTML += '</div></div><nav class="nav"><div class="nav-i '+(view==='home'?'on':'')+'" onclick="window.renderPage(\'home\')"><b>🏠</b>홈</div><div class="nav-i" onclick="window.executeFlow(\'saju\')"><b>📜</b>사주</div><div class="nav-i" onclick="window.executeFlow(\'tojeong\')"><b>🗓️</b>토정</div><div class="nav-i" onclick="window.renderPage(\'star-view\')"><b>✨</b>별자리</div><div class="nav-i" onclick="window.renderPage(\'tarot-pick\')"><b>🃏</b>타로</div></nav>';
-        shadow.innerHTML = bodyHTML; if (view === 'home' || view === 'star-view') fillSelects();
-      };
+localStorage.setItem("total", total);
+localStorage.setItem(todayKey, today);
 
-      window.updateCal = function(t) { state.cal = t; window.renderPage('home'); };
+document.getElementById("total").innerText = total;
+document.getElementById("today").innerText = today;
 
-      window.executeFlow = function(type) {
-        var nInput = $('ui-name'), yInput = $('ui-y'), mInput = $('ui-m'), dInput = $('ui-d'), tInput = $('ui-t');
-        if (nInput) state.name = nInput.value;
-        if (yInput) state.y = parseInt(yInput.value);
-        if (mInput) state.m = parseInt(mInput.value);
-        if (dInput) state.d = parseInt(dInput.value);
-        if (tInput) state.time = tInput.value;
+// ---------------- 사주 기본 데이터
+// ----------------
+const stems = ["갑","을","병","정","무","기","경","신","임","계"];
+const branches = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
 
-        if(!state.name) { alert("분석을 위해 성함을 입력해 주십시오."); return; }
-        window.buildReport(type);
-      };
+const elementMap = {
+  "갑":"목","을":"목","병":"화","정":"화",
+  "무":"토","기":"토","경":"금","신":"금",
+  "임":"수","계":"수"
+};
 
-      window.buildReport = function(type, extra) {
-        window.renderPage('result');
-        var p = 0; var fill = $('p-fill');
-        var itv = setInterval(function() { p += 10; if(fill) fill.style.width = p + '%'; if(p >= 100) { clearInterval(itv); generateText(type, extra); } }, 40);
-      };
+// ---------------- 기본 함수
+// ----------------
+function adjustYear(date){
+  let y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+  if(m<2 || (m===2 && d<4)) return y-1;
+  return y;
+}
 
-      async function generateText(type, extra) {
-        $('loader').style.display = 'none'; $('res-content').style.display = 'block';
-        var sol = Solar.fromYmd(parseInt(state.y), parseInt(state.m), parseInt(state.d));
-        var bazi = sol.getLunar().getEightChar(); var myGan = bazi.getDayGan(); var ohaeng = getOhaeng(myGan);
-        var seed = state.name.split('').reduce((a,b)=>a+b.charCodeAt(0),0) + sol.getDay();
-        $('res-title').innerText = state.name + "님의 운세 리포트";
-        
-        var reportHTML = "<div class='process-dashboard'><h3>📊 ANALYSIS DATA</h3><div class='data-grid'><div class='data-item'><b>사주명식</b>"+bazi.getYearGan()+bazi.getYearZhi()+"년 "+bazi.getMonthGan()+bazi.getMonthZhi()+"월 "+bazi.getDayGan()+bazi.getDayZhi()+"일 ("+ohaeng+")</div><div class='data-item'><b>핵심기운</b>일간 "+myGan+"</div></div></div>";
-        var sections = [];
-        
-        if(type === 'saju') {
-          sections = [
-            { t: "🌌 본원의 거울", s: "당신은 "+ohaeng+"의 에너지를 품고 있습니다.", d: "<p>"+ganTraits[myGan[0]]+"</p>" },
-            { t: "⏳ 인생 총운", s: "인생의 사계절을 심층 해독합니다.", d: expandDB.lifetimeBase(seed) },
-            { t: "💼 재물 테크 전략", s: "능동적인 가치 창출이 유리합니다.", d: expandDB.wealthBase(seed) },
-            { t: "🏥 건강 및 휴식", s: "에너지 연소만큼 로그아웃이 절실합니다.", d: expandDB.healthBase(seed) },
-            { t: "❤️ 대인관계", s: "나의 주파수가 맑아질 때 인연이 찾아옵니다.", d: expandDB.loveBase(seed) }
-          ];
-        } else if(type === 'tojeong') {
-          var to = tojeongDB[seed % tojeongDB.length];
-          sections = [
-            { t: "📜 괘사 및 총운", s: "「 " + to.h + " 」", d: "<p>"+expandDB.tojeongMethod+"</p><p>" + to.d1 + "</p>" }, 
-            { t: "🎯 성공 전략", s: "운의 흐름이 곧 승부처입니다.", d: "<p>" + to.d2 + "</p>" }
-          ];
-        } else if(type === 'star') {
-          var sk = extra || getStarSign(sol.getMonth(), sol.getDay());
-          sections = [{ t: "✨ "+sk+"자리 영혼의 매력", s: starTraits[sk], d: "<p>"+expandDB.starMethod+"</p><p>당신만이 가진 고유한 매력을 인정하고 이를 세상에 증명할 때 기적 같은 성공이 시작됩니다.</p>" }];
-        } else {
-          var tk = tarotDB[seed % tarotDB.length];
-          sections = [{ t: "🃏 타로 판독: "+tk.n, s: tk.s, d: "<p>"+expandDB.tarotMethod+"</p><p>"+tk.d+"</p>" }];
-        }
+function getYearPillar(year){
+  return stems[(year-4)%10] + branches[(year-4)%12];
+}
 
-        for(var i=0; i<sections.length; i++) {
-          reportHTML += '<div class="report-sec" id="rsec-' + i + '"><div class="sec-t">' + sections[i].t + '</div><div class="sum-box">" ' + sections[i].s + ' "</div><div class="det-text">' + sections[i].d + '</div></div>';
-        }
+function getDayPillar(date){
+  let base=new Date(1900,0,1);
+  let diff=Math.floor((date-base)/(1000*60*60*24));
+  let i=diff%60;
+  return stems[i%10]+branches[i%12];
+}
 
-        // --- 수익화 및 정책 문구 반영 섹션 ---
-        var itemMap = {"목(木)":"천연 식물 화분","화(火)":"조명 무드등","토(土)":"가죽 지갑","금(金)":"메탈 시계","수(水)":"텀블러"};
-        var selItem = itemMap[ohaeng] || "행운 아이템";
-        var coupangUrl = "https://link.coupang.com/a/erqHD0?q=" + encodeURIComponent(selItem);
+function getHourBranch(hour){
+  return branches[Math.floor((hour+1)/2)%12];
+}
 
-        reportHTML += '<div class="coupang-box">' +
-          '<h3 style="color:#00f2ff; margin-bottom:15px; font-weight:900;">✨ '+state.name+'님을 위한 개운 비책</h3>' +
-          '<p style="font-size:0.9rem; color:#768390; margin-bottom:20px;">귀하의 기운을 보완해줄 오늘의 추천 아이템입니다.</p>' +
-          '<div class="sum-box" style="margin-bottom:25px;">오늘의 행운템: <b>'+selItem+'</b></div>' +
-          '<a href="' + coupangUrl + '" class="btn-buy" target="_blank">👉 '+selItem+' 최저가 확인하기</a>' +
-          '<div class="coupang-disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div></div>';
+function getHourStem(dayStemIndex, hourBranchIndex){
+  return stems[(dayStemIndex*2 + hourBranchIndex)%10];
+}
 
-        $('report-body').innerHTML = reportHTML;
-        $('app-wrapper').scrollTo({top: 0, behavior: 'smooth'});
-        shadow.querySelectorAll('.report-sec').forEach((el, i) => setTimeout(() => el.classList.add('show'), i * 200));
-      }
+// ---------------- 오행 계산
+// ----------------
+function countElements(pillars){
+  let c={목:0,화:0,토:0,금:0,수:0};
+  pillars.forEach(p=>{
+    c[elementMap[p[0]]]++;
+  });
+  return c;
+}
 
-      function fillSelects() {
-        var sy = $('ui-y'), sm = $('ui-m'), sd = $('ui-d');
-        if(!sy) return;
-        for(var i=currentYear; i>=1940; i--) sy.add(new Option(i+'년', i)); sy.value = state.y;
-        for(var i=1; i<=12; i++) sm.add(new Option(i+'월', i)); sm.value = state.m;
-        for(var i=1; i<=31; i++) sd.add(new Option(i+'일', i)); sd.value = state.d;
-      }
-      function initApp() { if (typeof Lunar === 'undefined') { setTimeout(initApp, 100); return; } window.renderPage('home'); }
-      initApp();
-    })();
-  </script>
+// ---------------- 해석 생성
+// ----------------
+function generateText(dayElement, elements){
+
+  let min = Object.keys(elements).reduce((a,b)=>elements[a]<elements[b]?a:b);
+
+  let text = `
+  당신은 <b>${dayElement}</b> 기운 중심의 사주입니다.<br><br>
+  이 기운은 삶의 방향성과 성격을 결정짓는 핵심 요소입니다.<br><br>
+
+  현재 사주에서 <b>${min}</b> 기운이 부족합니다.<br>
+  이로 인해 특정 상황에서 불균형이 발생할 수 있습니다.<br><br>
+  `;
+
+  if(min==="수"){
+    text += "감정 소모, 피로 누적, 집중력 저하로 이어질 수 있습니다.<br>";
+  }
+  if(min==="금"){
+    text += "결단력 부족, 정리력 저하로 이어질 수 있습니다.<br>";
+  }
+
+  text += `
+  <br>
+  👉 이 부족한 기운을 보완하는 것이 중요합니다.
+  `;
+
+  return {text, min};
+}
+
+// ---------------- 실행
+// ----------------
+function analyze(){
+
+  let date=new Date(document.getElementById("birth").value);
+  let hour=parseInt(document.getElementById("time").value.split(":")[0]);
+
+  let year=getYearPillar(adjustYear(date));
+  let day=getDayPillar(date);
+
+  let dayStemIndex=stems.indexOf(day[0]);
+
+  let hBranch=getHourBranch(hour);
+  let hIndex=branches.indexOf(hBranch);
+  let hStem=getHourStem(dayStemIndex,hIndex);
+
+  let hourPillar=hStem+hBranch;
+
+  let pillars=[year,day,hourPillar];
+
+  let elements=countElements(pillars);
+  let dayElement=elementMap[day[0]];
+
+  let {text,min}=generateText(dayElement,elements);
+
+  document.getElementById("result").innerHTML = `
+    <b>📌 연주:</b> ${year}<br>
+    <b>📌 일주:</b> ${day}<br>
+    <b>📌 시주:</b> ${hourPillar}<br><br>
+
+    <b>🌿 오행:</b> 
+    목:${elements.목} 화:${elements.화} 토:${elements.토} 금:${elements.금} 수:${elements.수}
+    <br><br>
+
+    ${text}
+
+    <br><br>
+
+    <a class="btn" href="https://link.coupang.com/a/erylCA" target="_blank">
+    👉 당신에게 필요한 행운 아이템 보기
+    </a>
+  `;
+}
+
+</script>
+
 </body>
 </html>
