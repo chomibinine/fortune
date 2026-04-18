@@ -5,163 +5,221 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>운세 통합 플랫폼</title>
 <style>
-body{font-family:Arial,sans-serif;background:#0f0f1a;color:#fff;margin:0;padding:0;}
-.container{max-width:900px;margin:0 auto;padding:20px;}
-.card{background:#1b1b2a;padding:20px;border-radius:16px;margin-bottom:16px;}
-input,select,button{width:100%;padding:12px;margin-top:8px;border-radius:10px;border:none;font-size:16px;}
-button{background:#6c5ce7;color:#fff;cursor:pointer;}
-button:hover{background:#5a4bd6;}
-.result{white-space:pre-line;line-height:1.6;}
-.grid{display:grid;grid-template-columns:1fr;gap:12px;}
-@media(min-width:768px){.grid{grid-template-columns:1fr 1fr;}}
-.counter{font-size:14px;opacity:0.8;}
-canvas{width:100%;background:#0c0c18;border-radius:12px;margin-top:10px;}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(180deg,#0b0b16,#14142a);
+color:#fff;
+}
+.container{max-width:900px;margin:0 auto;padding:16px;}
+.header{
+text-align:center;
+padding:20px 0;
+}
+.header h1{font-size:26px;margin:0;}
+.sub{opacity:0.7;font-size:13px;margin-top:6px;}
+.card{
+background:#1b1b2a;
+border-radius:16px;
+padding:16px;
+margin:12px 0;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+input,select,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+font-size:15px;
+}
+button{
+background:linear-gradient(90deg,#6c5ce7,#8e44ad);
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+}
+button:hover{opacity:0.9;}
+.hidden{display:none;}
+.result{
+white-space:pre-line;
+line-height:1.6;
+font-size:14px;
+}
+.section-title{
+font-size:16px;
+margin-bottom:8px;
+color:#d0cfff;
+}
+.grid{
+display:grid;
+grid-template-columns:1fr;
+gap:12px;
+}
+@media(min-width:768px){
+.grid{grid-template-columns:1fr 1fr;}
+}
+.cta-fixed{
+position:sticky;
+bottom:0;
+background:#0f0f1a;
+padding:12px;
+border-top:1px solid #2a2a44;
+}
+.cta-btn{
+background:#00d2ff;
+color:#000;
+font-weight:bold;
+border-radius:12px;
+}
+.small{
+font-size:12px;
+opacity:0.7;
+}
+.reveal{
+background:#2a2a44;
+padding:10px;
+border-radius:10px;
+margin-top:10px;
+cursor:pointer;
+text-align:center;
+}
 </style>
 </head>
 <body>
+
 <div class="container">
 
-<h1>🔮 통합 운세 플랫폼</h1>
-<div class="counter">오늘 방문자: <span id="today">0</span> / 누적: <span id="total">0</span></div>
+<div class="header">
+<h1>🔮 당신의 운명 리포트</h1>
+<div class="sub">사주 · 토정비결 · 별자리 · 타로 통합 분석</div>
+</div>
 
-<div class="card">
-<h3>기본 정보 입력</h3>
+<div class="card" id="inputCard">
+<div class="section-title">기본 정보 입력</div>
 <input id="name" placeholder="이름" />
 <input id="birth" type="date" />
 <select id="gender">
 <option value="M">남성</option>
 <option value="F">여성</option>
 </select>
-<button onclick="runAll()">운세 보기</button>
+<button onclick="runAll()">🔮 내 운명 분석 시작</button>
+</div>
+
+<div id="resultArea" class="hidden">
+
+<div class="card">
+<div class="section-title">📌 당신의 핵심 운세</div>
+<div id="summary" class="result"></div>
 </div>
 
 <div class="grid">
 <div class="card">
-<h3>사주 (60갑자)</h3>
+<div class="section-title">사주 분석</div>
 <div id="saju" class="result"></div>
 </div>
 
 <div class="card">
-<h3>토정비결 (64괘)</h3>
+<div class="section-title">토정비결</div>
 <div id="tojeong" class="result"></div>
 </div>
 
 <div class="card">
-<h3>별자리</h3>
+<div class="section-title">별자리</div>
 <div id="zodiac" class="result"></div>
 </div>
 
 <div class="card">
-<h3>타로</h3>
+<div class="section-title">타로</div>
 <div id="tarot" class="result"></div>
 </div>
 </div>
 
 <div class="card">
-<h3>🔥 인생 흐름 그래프 (대운/세운 시각화)</h3>
-<canvas id="lifeChart" height="180"></canvas>
-<div id="flowText" class="result"></div>
+<div class="section-title">📊 인생 흐름</div>
+<div id="flow" class="result"></div>
 </div>
 
-<div class="card">
-<h3>추천 행운 아이템</h3>
+<div class="card hidden" id="affiliateBox">
+<div class="section-title">🎯 운세 강화 아이템</div>
+<div class="small">당신의 운 흐름을 보완하는 추천</div>
 <div id="affiliate"></div>
+</div>
+
+<div class="reveal" onclick="showAffiliate()">
+👉 추가 운세 해석 보기
+</div>
+
+</div>
+
+<div class="cta-fixed">
+<button class="cta-btn" onclick="scrollToTop()">🔄 다시 보기</button>
 </div>
 
 </div>
 
 <script>
-// 카운터
-let today=Number(localStorage.getItem('todayCount')||0);
-let total=Number(localStorage.getItem('totalCount')||0);
+
+// 간단 카운터
+let today=Number(localStorage.getItem('t')||0);
+let total=Number(localStorage.getItem('a')||0);
 today++;total++;
-localStorage.setItem('todayCount',today);
-localStorage.setItem('totalCount',total);
-document.getElementById('today').innerText=today;
-document.getElementById('total').innerText=total;
+localStorage.setItem('t',today);
+localStorage.setItem('a',total);
 
-// 별자리
-function getZodiac(date){
-const d=new Date(date);
-const m=d.getMonth()+1;
-const day=d.getDate();
-const s=["염소","물병","물고기","양","황소","쌍둥이","게","사자","처녀","천칭","전갈","사수"];
-if((m==1&&day>=20)||(m==2&&day<=18))return s[1];
-if((m==2&&day>=19)||(m==3&&day<=20))return s[2];
-if((m==3&&day>=21)||(m==4&&day<=19))return s[3];
-if((m==4&&day>=20)||(m==5&&day<=20))return s[4];
-if((m==5&&day>=21)||(m==6&&day<=21))return s[5];
-if((m==6&&day>=22)||(m==7&&day<=22))return s[6];
-if((m==7&&day>=23)||(m==8&&day<=22))return s[7];
-if((m==8&&day>=23)||(m==9&&day<=23))return s[8];
-if((m==9&&day>=24)||(m==10&&day<=22))return s[9];
-if((m==10&&day>=23)||(m==11&&day<=22))return s[10];
-if((m==11&&day>=23)||(m==12&&day<=24))return s[11];
-return s[0];
-}
-
-// 사주
 function saju(name,birth){
-const d=new Date(birth);
-const y=d.getFullYear();
-return `${name} 사주 기반 안정형 흐름`;
+let d=new Date(birth);
+return name+"님의 흐름은 안정과 변화가 공존하는 구조입니다.";
 }
 
-// 64괘
-const hex=["건","곤","둔","몽","수","송","사","비","태","비","소축","대유"];
-function tojeong(birth){
-const d=new Date(birth);
-return `괘: ${hex[(d.getDate()+d.getMonth())%hex.length]}\n흐름: 전환기`;
+function tojeong(){
+let arr=["건","곤","태","비","대유","둔"];
+return "괘: "+arr[Math.floor(Math.random()*arr.length)]+"\n현재 변화 구간입니다.";
 }
 
-// 타로
-const tarot=["Fool","Magician","Priestess","Empress","Death","Sun","Tower","Star"];
-function getTarot(){
-return tarot[Math.floor(Math.random()*tarot.length)];
+function zodiac(date){
+return "별자리 기반 감정 흐름 안정/변동 혼합";
 }
 
-// 🔥 인생 흐름 그래프 (대운/세운)
-function drawLife(name,birth){
-const canvas=document.getElementById("lifeChart");
-const ctx=canvas.getContext("2d");
-canvas.width=canvas.offsetWidth;
-
-let base=new Date(birth).getFullYear()%10;
-let values=[];
-for(let i=0;i<10;i++){
-values.push(Math.abs(Math.sin((base+i)*1.2))*100);
-}
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.beginPath();
-ctx.moveTo(0,180-values[0]);
-for(let i=1;i<10;i++){
-ctx.lineTo(i*(canvas.width/10),180-values[i]);
-}
-ctx.strokeStyle="#6c5ce7";
-ctx.stroke();
-
-let text="10년 대운 흐름: 상승-정체-재상승 구조";
-document.getElementById("flowText").innerText=text;
-}
-
-function affiliate(){
-return '<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 행운 아이템 보기</a>';
+function tarot(){
+let arr=["Fool","Sun","Tower","Star"];
+return "카드: "+arr[Math.floor(Math.random()*arr.length)];
 }
 
 function runAll(){
 let name=document.getElementById('name').value;
 let birth=document.getElementById('birth').value;
-if(!birth)return alert('생년월일');
+if(!birth)return alert('입력 필요');
 
+// 화면 전환
+document.getElementById('resultArea').classList.remove('hidden');
+
+// 핵심 요약 (전환 핵심)
+document.getElementById('summary').innerText=
+"당신은 현재 중요한 선택의 분기점에 있습니다.\n기회와 변화가 동시에 작용하는 시기입니다.";
+
+// 결과
 document.getElementById('saju').innerText=saju(name,birth);
-document.getElementById('tojeong').innerText=tojeong(birth);
-document.getElementById('zodiac').innerText=getZodiac(birth);
-document.getElementById('tarot').innerText=getTarot();
-document.getElementById('affiliate').innerHTML=affiliate();
+document.getElementById('tojeong').innerText=tojeong();
+document.getElementById('zodiac').innerText=zodiac(birth);
+document.getElementById('tarot').innerText=tarot();
 
-drawLife(name,birth);
+// 흐름
+let v=Math.random()*100;
+document.getElementById('flow').innerText=
+"10년 흐름 지수: "+v.toFixed(1)+"\n(상승/정체/전환 혼합 패턴)";
 }
+
+function showAffiliate(){
+document.getElementById('affiliateBox').classList.remove('hidden');
+document.getElementById('affiliate').innerHTML=
+'<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 당신의 운을 보완하는 아이템 보기</a>';
+}
+
+function scrollToTop(){
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
 </script>
 
 </body>
