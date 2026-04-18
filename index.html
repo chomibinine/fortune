@@ -17,7 +17,7 @@
 
         .card { background: var(--c); border: 1px solid #1a1d23; border-radius: 30px; padding: 35px; margin-bottom: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         label { display: block; margin: 15px 0 8px; font-size: 0.85rem; color: var(--p); font-weight: 800; text-transform: uppercase; }
-        input, select { width: 100%; padding: 18px; border-radius: 15px; border: 1px solid #1a1d23; background: #000; color: #fff; font-size: 1.05rem; outline: none; transition: 0.3s; font-family: inherit; }
+        input, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #1a1d23; background: #000; color: #fff; font-size: 1.05rem; outline: none; transition: 0.3s; font-family: inherit; }
         .btn-row { display: flex; gap: 12px; margin-bottom: 20px; }
         .t-btn { flex: 1; padding: 16px; border-radius: 12px; background: #000; border: 1px solid #1a1d23; color: #4e5561; cursor: pointer; text-align: center; font-weight: 800; transition: 0.2s; }
         .t-btn.on { background: var(--p); color: #000; border-color: var(--p); }
@@ -187,7 +187,7 @@
                     <div class="l-item">행운의 방향<br><b>${['동북쪽','정남쪽','서북쪽','정동쪽'][seed%4]}</b></div>
                     <div class="l-item">추천 행운템<br><b>${item}</b></div>
                 </div>
-                <a href="${coupangLink}?q=${encodeURIComponent(item)}" class="btn-buy" target="_blank">👉 ${item} 최저가 라인업 확인하기</a>
+                <a href="${coupangLink}?q=${encodeURIComponent(item)}" class="btn-buy" target="_blank">👉 ${item} 행운템 확인하기</a>
             </div>
             <button class="btn-run" style="background:#1a1d23; color:#fff; margin-top:40px; width:100%; border:none; padding:20px; border-radius:20px; font-weight:900; cursor:pointer;" onclick="renderPage('home')">돌아가기</button>`;
 
@@ -199,7 +199,7 @@
         function genSec(t, s, d) { return `<div class="report-sec"><div class="sec-t">${t}</div><div class="sum-box">" ${s} "</div><div class="det-text">${d}</div></div>`; }
 
         function fillSelects() {
-            const sy = document.getElementById('in-y'), sm = document.getElementById('in-m'), sd = document.getElementById('in-d');
+            const sy = document.getElementById('ui-y'), sm = document.getElementById('ui-m'), sd = document.getElementById('ui-d');
             for(let i=currentYear; i>=1940; i--) sy.add(new Option(i+'년', i)); sy.value = state.y;
             for(let i=1; i<=12; i++) sm.add(new Option(i+'월', i)); sm.value = state.m;
             for(let i=1; i<=31; i++) sd.add(new Option(i+'일', i)); sd.value = state.d;
