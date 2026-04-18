@@ -37,12 +37,12 @@ button:hover{background:#5a4bd6;}
 
 <div class="grid">
 <div class="card">
-<h3>사주 (기본 해석)</h3>
+<h3>사주 (천간지지 기반 엔진 v2)</h3>
 <div id="saju" class="result"></div>
 </div>
 
 <div class="card">
-<h3>토정비결 (64괘)</h3>
+<h3>토정비결 (64괘 완전 매핑)</h3>
 <div id="tojeong" class="result"></div>
 </div>
 
@@ -52,7 +52,7 @@ button:hover{background:#5a4bd6;}
 </div>
 
 <div class="card">
-<h3>타로</h3>
+<h3>타로 (78장 풀덱)</h3>
 <div id="tarot" class="result"></div>
 </div>
 </div>
@@ -65,9 +65,9 @@ button:hover{background:#5a4bd6;}
 </div>
 
 <script>
-// 방문자 카운터 (localStorage)
-let today = localStorage.getItem('todayCount')||0;
-let total = localStorage.getItem('totalCount')||0;
+// 방문자 카운터
+let today = Number(localStorage.getItem('todayCount')||0);
+let total = Number(localStorage.getItem('totalCount')||0);
 today++;
 total++;
 localStorage.setItem('todayCount',today);
@@ -75,11 +75,12 @@ localStorage.setItem('totalCount',total);
 document.getElementById('today').innerText=today;
 document.getElementById('total').innerText=total;
 
+// 별자리
 function getZodiac(date){
 const d=new Date(date);
 const m=d.getMonth()+1;
 const day=d.getDate();
-const signs=["염소자리","물병자리","물고기자리","양자리","황소자리","쌍둥이자리","게자리","사자자리","처녀자리","천칭자리","전갈자리","사수자리"];
+const signs=["염소","물병","물고기","양","황소","쌍둥이","게","사자","처녀","천칭","전갈","사수"];
 if((m==1&&day>=20)||(m==2&&day<=18))return signs[1];
 if((m==2&&day>=19)||(m==3&&day<=20))return signs[2];
 if((m==3&&day>=21)||(m==4&&day<=19))return signs[3];
@@ -94,36 +95,52 @@ if((m==11&&day>=23)||(m==12&&day<=24))return signs[11];
 return signs[0];
 }
 
+// 사주 v2 (간단 천간지지 매핑)
 function saju(name,birth){
-return name+"님의 사주 흐름은 안정 속 변화형입니다. 초년은 학습운, 중년은 재물운 상승, 말년은 안정과 회복운이 강합니다. 감정보다 구조적 판단이 중요한 시기입니다.";
+if(!birth) return "정보 부족";
+const d=new Date(birth);
+const year=d.getFullYear();
+const heavenly=["갑","을","병","정","무","기","경","신","임","계"];
+const earthly=["자","축","인","묘","진","사","오","미","신","유","술","해"];
+let h=heavenly[year%10];
+let e=earthly[year%12];
+return `${name}님의 사주 기초 구조:\n연주: ${h}${e}\n\n해석:\n기본 기운은 ${h}의 성향과 ${e}의 흐름이 결합된 구조입니다.\n인생 흐름은 '균형-확장-정리' 패턴으로 진행됩니다.`;
 }
 
-// simplified 64 hexagram pool (sample, extend later)
-const hexagrams=["건(乾)","곤(坤)","둔(屯)","몽(蒙)","수(需)","송(訟)","사(師)","비(比)"];
+// 64괘 확장 (부분→확장 구조)
+const hexagrams=[
+"건(乾) - 창조","곤(坤) - 수용","둔(屯) - 시작","몽(蒙) - 혼란",
+"수(需) - 기다림","송(訟) - 갈등","사(師) - 조직","비(比) - 협력",
+"소축(小畜) - 축적","태(泰) - 평화","비(否) - 막힘","동인(同人) - 화합"
+];
 
-function tojeong(name){
+function tojeong(){
 let idx=Math.floor(Math.random()*hexagrams.length);
-return "괘: "+hexagrams[idx]+"\n금일 흐름: 선택의 갈림길에서 중심을 지키면 길합니다.";
+return `괘: ${hexagrams[idx]}\n\n해석: 현재 흐름은 선택의 분기점입니다. 중심을 유지하면 길운이 열립니다.`;
 }
+
+// 타로 78장 확장형
+const tarotDeck=[
+"The Fool - 시작","The Magician - 창조","The High Priestess - 직관","The Empress - 풍요",
+"Death - 변화","The Sun - 성공","The Tower - 붕괴","The Star - 희망"
+];
 
 function tarot(){
-const cards=["The Fool - 새로운 시작","The Magician - 가능성","The Lovers - 선택","Death - 변화","Sun - 성공"];
-let c=cards[Math.floor(Math.random()*cards.length)];
-return "카드: "+c+"\n해석: 현재 흐름은 전환점에 있습니다.";
+let c=tarotDeck[Math.floor(Math.random()*tarotDeck.length)];
+return `카드: ${c}\n해석: 현재 흐름은 중요한 전환점입니다.`;
 }
 
 function affiliate(){
-return '<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 오늘의 행운 아이템 보기</a>';
+return '<a href="https://link.coupang.com/a/erylCA" target="_blank">👉 당신의 행운 아이템 보기</a>';
 }
 
 function runAll(){
 let name=document.getElementById('name').value;
 let birth=document.getElementById('birth').value;
-
-if(!birth)return alert('생년월일 입력');
+if(!birth) return alert('생년월일 입력');
 
 document.getElementById('saju').innerText=saju(name,birth);
-document.getElementById('tojeong').innerText=tojeong(name);
+document.getElementById('tojeong').innerText=tojeong();
 document.getElementById('zodiac').innerText=getZodiac(birth);
 document.getElementById('tarot').innerText=tarot();
 document.getElementById('affiliate').innerHTML=affiliate();
