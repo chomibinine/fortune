@@ -10,37 +10,22 @@
   <div id="oracle-portal-root"></div>
 
   <script>
-    /* [시스템 전권 위임] NEURAL ORACLE v23.0 PREMIUM SAJU EDITION
-     * [Shadow DOM 적용] 블로그 테마 충돌 완벽 방지 및 독립 실행 환경 구축
-     */
     (function() {
       var root = document.getElementById('oracle-portal-root');
-      
-      // Shadow DOM을 생성하여 블로그의 CSS와 완전히 격리합니다.
       var shadow = root.attachShadow({mode: 'open'});
-      
       var state = { name: '', y: 1990, m: 1, d: 1, cal: 'solar', time: 'none' };
       var currentYear = new Date().getFullYear();
-      
-      // Shadow DOM 내부 전용 헬퍼 함수
       function $(id) { return shadow.getElementById(id); }
-      
+
       // --- 1. 코어 디자인 (CSS) ---
       var css = 
         "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');" +
         ":host { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2147483647; background: transparent; }" +
         ".app-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #05070a; color: #adbac7; font-family: 'Pretendard', sans-serif; line-height: 1.8; overflow-y: auto; text-align: left; box-sizing: border-box; }" +
         ".app-wrapper * { box-sizing: border-box; }" +
-        ".app-wrapper h1, .app-wrapper h2, .app-wrapper h3, .app-wrapper p { margin: 0; padding: 0; }" +
         ".container { max-width: 650px; margin: 0 auto; padding: 20px 20px 140px; }" +
         ".intro-box { text-align: center; padding: 50px 0 30px; border-bottom: 1px solid #1a1d23; margin-bottom: 30px; }" +
         ".intro-box h1 { color: #00f2ff; font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; margin: 0; text-shadow: 0 0 20px rgba(0,242,255,0.4); }" +
-        ".intro-box p { color: #768390; font-size: 0.95rem; margin-top:10px; }" +
-        ".method-grid { display: grid; gap: 15px; margin-bottom: 40px; }" +
-        ".method-card { background: #0d1117; border: 1px solid #1a1d23; border-radius: 20px; padding: 25px; transition: 0.3s; cursor: pointer; }" +
-        ".method-card:hover { border-color: #00f2ff; transform: translateY(-3px); background:#111827; }" +
-        ".method-card h2 { font-size: 1.2rem; color: #fff; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }" +
-        ".method-card p { font-size: 0.9rem; color: #8b949e; margin: 0; line-height: 1.6; }" +
         ".card { background: #0d1117; border: 1px solid #1a1d23; border-radius: 28px; padding: 30px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); }" +
         "label { display: block; margin: 15px 0 8px; font-size: 0.8rem; color: #00f2ff; font-weight: 800; text-transform: uppercase; }" +
         "input, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #1a1d23; background: #05070a; color: #fff; font-size: 1rem; outline: none; box-sizing: border-box; font-family: inherit; }" +
@@ -48,311 +33,151 @@
         ".t-btn { flex: 1; padding: 14px; border-radius: 12px; background: #000; border: 1px solid #1a1d23; color: #4e5561; cursor: pointer; text-align: center; font-weight: 800; transition:0.2s; }" +
         ".t-btn.on { background: #00f2ff; color: #000; border-color: #00f2ff; }" +
         ".btn-run { background: #00f2ff; color: #000; border: none; padding: 22px; border-radius: 20px; width: 100%; font-weight: 900; font-size: 1.25rem; cursor: pointer; margin-top: 15px; box-shadow: 0 10px 20px rgba(0,242,255,0.2); transition:0.3s; font-family: inherit; }" +
-        ".btn-run:hover { background: #fff; color: #000; }" +
-        ".process-dashboard { background: linear-gradient(145deg, #0d1117, #05070a); border: 1px solid #30363d; padding: 30px; border-radius: 24px; margin-bottom: 50px; position: relative; overflow: hidden; }" +
-        ".process-dashboard::before { content: 'ANALYSIS METADATA'; position: absolute; top: 15px; right: 20px; font-size: 0.65rem; color: #4e5561; font-weight: 900; letter-spacing: 1px; }" +
-        ".process-dashboard h3 { color: #fff; font-size: 1.2rem; margin: 0 0 20px; font-weight: 900; border-bottom: 1px solid #30363d; padding-bottom: 10px; }" +
+        ".process-dashboard { background: linear-gradient(145deg, #0d1117, #05070a); border: 1px solid #30363d; padding: 30px; border-radius: 24px; margin-bottom: 50px; position: relative; }" +
         ".data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }" +
-        ".data-item { background: #000; border: 1px solid #1a1d23; padding: 15px; border-radius: 12px; font-size: 0.85rem; color: #adbac7; }" +
-        ".data-item b { color: #00f2ff; display: block; font-size: 1.1rem; margin-bottom: 5px; }" +
-        ".process-text { font-size: 0.95rem; color: #adbac7; line-height: 1.8; background: rgba(0,242,255,0.05); padding: 20px; border-radius: 12px; border-left: 3px solid #00f2ff; margin-top: 20px; }" +
+        ".data-item { background: #000; border: 1px solid #1a1d23; padding: 15px; border-radius: 12px; font-size: 0.85rem; }" +
+        ".data-item b { color: #00f2ff; display: block; font-size: 1.1rem; }" +
         ".report-sec { margin-bottom: 60px; opacity: 0; transform: translateY(20px); transition: 0.8s ease; }" +
         ".report-sec.show { opacity: 1; transform: translateY(0); }" +
         ".sec-t { font-size: 1.45rem; color: #fff; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }" +
         ".sec-t::before { content: ''; width: 6px; height: 22px; background: #ffd700; border-radius: 10px; }" +
-        ".sum-box { background: rgba(255,215,0,0.05); padding: 25px; border-radius: 18px; font-weight: 800; color: #ffd700; margin-bottom: 25px; font-size: 1.15rem; border: 1px solid rgba(255,215,0,0.2); line-height: 1.6; word-break: keep-all; }" +
-        ".det-text { font-size: 1.05rem; color: #e6edf3; line-height: 1.85; text-align: left; word-break: keep-all; letter-spacing: -0.01em; }" +
-        ".det-text p { margin-top: 0; margin-bottom: 24px; }" +
-        ".lucky-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }" +
-        ".l-item { background: #05070a; border: 1px solid #1a1d23; padding: 15px; border-radius: 15px; text-align: center; font-size: 0.85rem; color: #768390; }" +
-        ".l-item b { display: block; color: #fff; font-size: 1.15rem; margin-top: 8px; }" +
-        ".nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #0d1117; border-top: 1px solid #1a1d23; padding: 10px 0; z-index: 1000000; max-width: 650px; margin: 0 auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }" +
-        ".nav-i { flex: 1; text-align: center; color: #4e5561; cursor: pointer; font-size: 0.65rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.2s; }" +
-        ".nav-i.on { color: #00f2ff; transform: translateY(-2px); }" +
-        ".nav-i b { font-size: 1.4rem; line-height: 1; }" +
-        "#loader { display: none; text-align: center; padding: 120px 20px; }" +
+        ".sum-box { background: rgba(255,215,0,0.05); padding: 25px; border-radius: 18px; font-weight: 800; color: #ffd700; margin-bottom: 25px; font-size: 1.15rem; border: 1px solid rgba(255,215,0,0.2); }" +
+        ".det-text { font-size: 1.05rem; color: #e6edf3; line-height: 1.85; text-align: left; word-break: keep-all; }" +
+        ".nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #0d1117; border-top: 1px solid #1a1d23; padding: 10px 0; z-index: 1000000; max-width: 650px; margin: 0 auto; }" +
+        ".nav-i { flex: 1; text-align: center; color: #4e5561; cursor: pointer; font-size: 0.65rem; font-weight: 800; display: flex; flex-direction: column; gap: 5px; }" +
+        ".nav-i.on { color: #00f2ff; }" +
         ".p-fill { width: 0%; height: 3px; background: #00f2ff; transition: 0.2s; box-shadow: 0 0 20px #00f2ff; margin-top: 25px; }" +
         ".tarot-pick { display: flex; justify-content: center; gap: 15px; margin: 40px 0; }" +
-        ".t-card { width: 85px; height: 140px; background: linear-gradient(135deg, #1a1d23, #000); border: 2px solid #00f2ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,242,255,0.4); }" +
-        ".t-card:hover { transform: translateY(-15px); border-color: #ffd700; box-shadow: 0 15px 30px rgba(255,215,0,0.4); }";
+        ".t-card { width: 85px; height: 140px; background: linear-gradient(135deg, #1a1d23, #000); border: 2px solid #00f2ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: 0.3s; }" +
+        ".t-card:hover { transform: translateY(-15px); border-color: #ffd700; }" +
+        ".coupang-disclaimer { font-size: 0.75rem; color: #4e5561; margin-top: 20px; text-align: center; font-weight: normal; }";
 
-      // --- 2. 방대한 심층 텍스트 데이터베이스 ---
+      // --- 2. 방대한 심층 데이터베이스 ---
       var gans = ["甲(갑)", "乙(을)", "丙(병)", "丁(정)", "戊(무)", "己(기)", "庚(경)", "辛(신)", "壬(임)", "癸(계)"];
       var jis = ["子(자)", "丑(축)", "寅(인)", "卯(묘)", "辰(진)", "巳(사)", "午(오)", "未(미)", "申(신)", "酉(유)", "戌(술)", "亥(해)"];
       var hanjaToKor = { '甲':'갑', '乙':'을', '丙':'병', '丁':'정', '戊':'무', '己':'기', '庚':'경', '辛':'신', '壬':'임', '癸':'계', '子':'자', '丑':'축', '寅':'인', '卯':'묘', '辰':'진', '巳':'사', '午':'오', '未':'미', '申':'신', '酉':'유', '戌':'술', '亥':'해' };
-
       var ganTraits = {
         "甲": "하늘을 향해 수직으로 뻗어나가는 거목의 기질입니다. 잔머리를 굴리기보다는 정공법으로 승부하며, 한 번 결심한 일은 절대 굽히지 않는 리더십이 귀하의 가장 큰 매력입니다.",
         "乙": "바람에 흔들리되 절대 꺾이지 않는 넝쿨과 같습니다. 놀라운 환경 적응력과 유연함을 타고났으며, 부드러운 미소 속에 감춰진 끈질긴 생명력이 귀하를 최후의 승자로 만듭니다.",
-        "丙": "세상을 밝게 비추는 한낮의 태양처럼, 주변 사람들에게 따뜻한 에너지를 나누어주는 분입니다. 뒤끝이 없고 호탕하며, 열정적으로 목표를 향해 달려가는 모습이 눈부십니다.",
-        "丁": "어둠을 은은하게 밝히는 촛불처럼, 사람의 마음을 꿰뚫어 보는 통찰력이 있습니다. 겉보기엔 조용해 보여도 내면에는 세상을 바꿀 만한 따뜻하고 강렬한 불꽃이 숨어 있습니다.",
-        "戊": "모든 것을 묵묵히 품어주는 거대한 산과 같습니다. 듬직하고 신용을 중시하며, 사소한 것에 흔들리지 않는 넓은 스케일 덕분에 주변 사람들이 귀하에게 깊게 의지합니다.",
-        "己": "씨앗을 길러내는 비옥한 대지처럼, 사람을 품고 키워내는 다정다감한 성품을 지녔습니다. 포용력이 넓고 실속을 차릴 줄 알며, 상황의 밸런스를 잡는 지혜가 탁월합니다.",
-        "庚": "제련되지 않은 강인한 무쇠처럼, 의리와 결단력이 남다릅니다. 한 번 마음먹은 일은 어떤 난관이 있어도 끝까지 밀어붙이는 불굴의 의지가 귀하의 가장 강력한 무기입니다.",
-        "辛": "정교하게 세공된 눈부신 보석과도 같습니다. 예민하고 섬세한 감각을 지니셨으며, 매사에 완벽을 추구하는 철저함 덕분에 어느 분야에서든 최고 전문가로 인정받게 됩니다.",
-        "壬": "도도하게 흐르는 넓은 바다처럼, 지혜가 깊고 속을 쉽게 알 수 없는 신비로운 매력이 있습니다. 포용력이 넓으면서도 상황에 따라 유연하게 대처하는 지략이 아주 뛰어납니다.",
-        "癸": "만물을 촉촉하게 적시는 봄비처럼, 끊임없이 샘솟는 지식욕과 창의적인 아이디어를 품고 있습니다. 뛰어난 감수성으로 사람들의 닫힌 마음을 다독여주는 따뜻한 분입니다."
+        "丙": "세상을 밝게 비추는 태양처럼, 주변 사람들에게 따뜻한 에너지를 나누어주는 분입니다. 열정적으로 목표를 향해 달려가는 모습이 눈부십니다.",
+        "丁": "어둠을 은은하게 밝히는 촛불처럼, 사람의 마음을 꿰뚫어 보는 통찰력이 있습니다. 내면에는 세상을 바꿀 만한 따뜻하고 강렬한 불꽃이 숨어 있습니다.",
+        "戊": "만물을 품어주는 거대한 산과 같습니다. 듬직하고 신용을 중시하며, 주변 사람들이 귀하에게 깊게 의지합니다.",
+        "己": "씨앗을 길러내는 비옥한 대지처럼, 사람을 품고 키워내는 다정다감한 성품을 지녔습니다. 실속을 차릴 줄 알며 조화로운 지혜가 탁월합니다.",
+        "庚": "강인한 무쇠처럼 의리와 결단력이 남다릅니다. 한 번 마음먹은 일은 어떤 난관도 끝까지 밀어붙이는 불굴의 의지가 무기입니다.",
+        "辛": "눈부신 보석과도 같습니다. 섬세한 감각과 완벽을 추구하는 철저함 덕분에 어느 분야에서든 최고 전문가로 인정받게 됩니다.",
+        "壬": "도도하게 흐르는 넓은 바다처럼 지혜가 깊습니다. 포용력이 넓으면서도 유연하게 대처하는 지략이 아주 뛰어납니다.",
+        "癸": "만물을 적시는 봄비처럼 지식욕과 창의적 아이디어를 품고 있습니다. 따뜻한 감수성으로 사람들의 닫힌 마음을 다독여줍니다."
       };
-
-      var jiTraits = {
-        "子": "한겨울의 응축된 지혜", "丑": "봄을 준비하는 끈기와 인내", "寅": "초봄의 폭발적인 생명력", "卯": "봄날의 만개하는 도화 기운", 
-        "辰": "만물을 싹틔우는 변화무쌍함", "巳": "초여름의 왕성한 열정", "午": "한여름의 뜨거운 사교성", "未": "결실을 맺기 전의 치밀함", 
-        "申": "초가을의 단호한 결단력", "酉": "가을의 날카로움과 섬세함", "戌": "만물을 거두는 책임감", "亥": "겨울로 들어가는 깊은 사고력"
-      };
-
-      var ohaengModern = {
-        "목(木)": "기획력과 성장 지향적 마인드를 바탕으로, 기획, 교육, IT, 창작 등 무에서 유를 창조해 내는 분야에서 재물을 크게 거두어들입니다.",
-        "화(火)": "타고난 표현력과 확산력을 바탕으로, 마케팅, 방송, 예술, 서비스업 등 사람들과 에너지를 교류하는 분야에서 확실한 수익을 창출합니다.",
-        "토(土)": "신뢰와 안정감을 무기로, 부동산, 금융 중개, 시스템 구축 등 사람과 자산을 안전하게 연결하고 관리하는 분야에서 흔들림 없는 부를 축적합니다.",
-        "금(金)": "날카로운 분석력과 이성적인 판단력을 바탕으로, 금융, 컨설팅, 투자, 정밀 기술 등 원칙과 팩트가 중요한 곳에서 폭발적인 성과를 냅니다.",
-        "수(水)": "경계 없는 유연한 사고를 바탕으로, 무역, 유통, 심층 연구, 철학 등 변화무쌍한 분야에서 남들이 보지 못하는 돈맥을 정확히 짚어냅니다."
-      };
-
       var expandDB = {
-        sajuMethod: "<p><b>[정통 사주 명리학의 결과 도출 근거]</b></p><p>본 카운슬링은 수천 년간 축적된 동양 천문학의 결정체인 명리학(命理學)의 '자평진전' 및 '적천수'의 십간십이지 이론을 현대적 알고리즘으로 완벽히 복원하여 결과를 도출합니다. 귀하가 태어난 연월일시의 태양의 위치(24절기 황경 좌표)를 추적하여 입체적인 우주 에너지를 8개의 한자(사주팔자)로 환산합니다.</p>",
-        tojeongMethod: "<p><b>[토정비결 144괘 수리 알고리즘의 도출 근거]</b></p><p>본 리포트는 조선 명종 시대 토정 이지함 선생이 집대성한 정통 역학서 '토정비결'의 작괘(作卦) 원리를 디지털 수학 모델로 재현한 결과입니다. 귀하가 태어난 연도의 태세(천기), 생월(지기), 생일(인기)의 고유 상수를 추출하고, 이를 올해의 세운(歲運) 상수와 결합하여 144개의 주역(周易) 괘상 중 하나를 도출하는 정교한 연산 과정을 거칩니다.</p>",
-        starMethod: "<p><b>[서양 점성학(Astrology)의 네이탈 차트 도출 근거]</b></p><p>본 분석은 고대 바빌로니아에서 시작되어 헬레니즘 시대를 거쳐 완성된 서양 점성술의 천체 투영 기법을 사용합니다. 귀하가 첫 숨을 들이마신 정확한 순간, 태양계의 10대 행성이 황도 12궁의 어느 좌표에 위치해 있었는지를 기하학적으로 역산하여 운명의 지도를 그립니다.</p>",
-        tarotMethod: "<p><b>[타로 동시성 원리와 아키타입 도출 근거]</b></p><p>본 카운슬링은 스위스의 심리학자 칼 구스타프 융이 제창한 '동시성(Synchronicity)' 이론, 즉 의미 있는 우연의 일치라는 양자역학적 심리 원리에 기반합니다. 선택된 메이저 아르카나 카드는 귀하의 내면 깊은 곳에서 이미 알고 있는 정답을 시각적 상징(Symbol)으로 투영해 주는 거울입니다.</p>",
-        
+        sajuMethod: "<p>명리학 알고리즘을 통해 귀하가 태어난 연월일시의 태양 에너지 좌표를 분석합니다. 십간십이지 이론을 현대적으로 재해석하여 도출한 데이터입니다.</p>",
         lifetimeBase: function(seed) {
-          var type = seed % 4; var variant = (seed + 11) % 3;
-          var types = [
-            ["대기만성형", "초년에 담금질을 거쳐 중년 이후 거대한 부를 쌓는 명식입니다."],
-            ["자수성가형", "타인의 도움 없이 오직 본인의 의지로 무에서 유를 창조하는 강인한 운기입니다."],
-            ["평탄안정형", "큰 굴곡 없이 꾸준히 우상향하며 안락한 말년을 맞이하는 복된 사주입니다."],
-            ["개척자형", "기존의 틀을 깨고 새로운 분야를 선점하여 시대의 주인공이 되는 다이내믹한 삶입니다."]
+          var solutions = [
+            "<p><b>[대기만성형]</b> 초년에 시행착오를 겪으며 내공을 쌓아 중년 이후 폭발적인 상승세를 타는 명식입니다. 노후에는 재물적 풍요와 존경을 동시에 누립니다.</p>",
+            "<p><b>[자수성가형]</b> 부모나 타인의 도움 없이 오직 자신의 능력으로 무에서 유를 창조해 냅니다. 업계의 중심에 서게 되는 강인한 운기입니다.</p>",
+            "<p><b>[평탄안정형]</b> 부모님이나 조상의 덕을 입어 큰 풍파 없이 평탄하게 성장합니다. 계단을 오르듯 착실하게 자산을 증식시키는 안정적인 사주입니다.</p>",
+            "<p><b>[개척자형]</b> 기존의 틀을 거부하는 반항아적 기질로, 아무도 가지 않은 미지의 길에서 혁신을 일으켜 큰 부를 거머쥐는 다이내믹한 삶입니다.</p>"
           ];
-          return "<p><b>[" + types[type][0] + "]</b> " + types[type][1] + "</p>";
+          return solutions[seed % 4];
         },
-        wealthBase: function(seed) { return "<p>현대 자본주의 사회에서 부의 축적은 기질과 세상의 파동이 공명할 때 발생합니다. 귀하의 재운은 능동적으로 가치를 창출할 때 비약적으로 확장됩니다.</p>"; },
-        healthBase: function(seed) { return "<p>육체적 피로보다 신경계의 피로를 주의해야 합니다. 의도적인 단절과 질 높은 휴식이 건강운을 지키는 핵심입니다.</p>"; },
-        loveBase: function(seed) { return "<p>나의 주파수가 맑아졌을 때 같은 파동을 가진 인연이 찾아옵니다. 질적인 밀도가 높은 관계에 집중하십시오.</p>"; }
+        wealthBase: function(seed) { return "<p>현대 자본주의 사회에서 귀하의 재운은 능동적으로 가치를 창출할 때 확장됩니다. 조급함을 버리고 자신만의 원칙을 세울 때 재물은 자석처럼 끌려올 것입니다.</p>"; },
+        healthBase: function(seed) { return "<p>책임감이 강해 뇌 신경계의 피로가 먼저 누적됩니다. 의도적인 로그아웃과 질 높은 휴식을 통해 생체 리듬의 균형을 되찾아야 합니다.</p>"; },
+        loveBase: function(seed) { return "<p>애써 구걸하는 관계가 아닌, 당신의 파동이 맑아졌을 때 찾아오는 소울메이트에 집중하십시오. 인간관계의 양보다 질적인 밀도가 중요한 시기입니다.</p>"; }
       };
 
       var tojeongDB = [
-        { h: "春山滿花 蝶自來尋 (춘산만화 첩자래심)", d1: "봄 동산에 꽃이 만발하니 나비가 스스로 찾아오는 대길의 형국입니다.", d2: "하반기부터 노력의 결실이 눈에 띄게 나타나며 귀인의 도움을 받게 됩니다." },
-        { h: "旱天降雨 萬物蘇生 (한천강우 만물소생)", d1: "오랜 가뭄 끝에 단비가 내려 만물이 소생하듯 막혔던 일이 시원하게 뚫립니다.", d2: "가을을 전후하여 문서운이 강력해지니 중요한 결정은 이때 내리셔도 좋습니다." }
+        { h: "春山滿花 蝶自來尋", d1: "봄 동산에 꽃이 만발하니 나비가 찾아옵니다.", d2: "하반기부터 노력의 결실이 뚜렷하게 나타나며 귀인의 도움을 받게 됩니다." },
+        { h: "旱天降雨 萬物蘇生", d1: "오랜 가뭄 끝에 단비가 내려 만물이 소생합니다.", d2: "막혔던 자금 흐름이 뚫리며 문서운이 강력해지니 중요한 결정에 유리합니다." }
       ];
-
-      var starTraits = {
-        "양": "개척자 정신이 빛나는 불꽃 같은 열정", "황소": "안정감과 미적 감각이 뛰어난 풍요의 대지", "쌍둥이": "소통 능력이 탁월한 지성의 바람", "게": "깊은 공감 능력을 지닌 감정의 샘", "사자": "카리스마 넘치는 태양의 군주", "처녀": "분석력이 뛰어난 완벽한 수확자", "천칭": "밸런스를 맞출 줄 아는 조화의 저울", "전갈": "통찰력이 뛰어난 심연의 통찰가", "사수": "긍정 에너지가 넘치는 자유의 화살", "염소": "야망을 품은 고독한 정상", "물병": "혁신을 꿈꾸는 독창적인 별", "물고기": "감수성이 풍부한 무한한 바다"
-      };
 
       var tarotDB = [
-        { n: "THE SUN (태양)", s: "성공과 기쁨이 찾아오는 최고의 순간", d: "어둠이 걷히고 모든 것이 명쾌해집니다. 본인의 능력을 믿고 에너지를 발산하십시오." },
-        { n: "THE EMPRESS (여황제)", s: "물질적 풍요와 정서적 만족감", d: "주변을 따뜻하게 돌보고 여유를 즐기십시오. 행운이 자연스럽게 흘러들어옵니다." }
+        { n: "THE SUN", s: "성공과 기쁨이 찾아오는 순간", d: "모든 것이 명쾌해집니다. 본인의 능력을 믿고 에너지를 밖으로 발산하십시오." },
+        { n: "THE EMPRESS", s: "물질적 풍요와 정서적 만족", d: "주변을 따뜻하게 돌보고 여유를 즐기십시오. 뜻밖의 행운이 자연스럽게 들어옵니다." }
       ];
 
-      // --- 3. 천문 역법 기반 로직 엔진 ---
-      function getOhaeng(gan) {
-        if(gan === '甲' || gan === '乙') return '목(木)'; if(gan === '丙' || gan === '丁') return '화(火)';
-        if(gan === '戊' || gan === '己') return '토(土)'; if(gan === '庚' || gan === '辛') return '금(金)'; return '수(水)';
-      }
-      
-      function getStarSign(m, d) {
-        var dates = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
-        var signs = ["염소", "물병", "물고기", "양", "황소", "쌍둥이", "게", "사자", "처녀", "천칭", "전갈", "사수", "염소"];
-        return signs[d > dates[m - 1] ? m : m - 1];
-      }
+      // --- 3. 로직 엔진 ---
+      function getOhaeng(gan) { if('甲乙'.includes(gan[0])) return '목(木)'; if('丙丁'.includes(gan[0])) return '화(火)'; if('戊己'.includes(gan[0])) return '토(土)'; if('庚辛'.includes(gan[0])) return '금(金)'; return '수(水)'; }
 
-      // --- 4. 앱 구동 및 화면 렌더링 ---
+      // --- 4. 화면 렌더링 ---
       window.renderPage = function(view) {
+        var cUrl = window.location.href.split('?')[0];
+        var badgeUrl = "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=" + encodeURIComponent(cUrl) + "&count_bg=%2300f2ff&title_bg=%230d1117&title=%EB%B0%A9%EB%AC%B8%EC%9E%90&edge_flat=false";
         var html = '<style>' + css + '</style><div class="app-wrapper" id="app-wrapper"><div class="container">';
         
         if (view === 'home') {
-          var currentUrl = window.location.href.split('?')[0];
-          var counterBadgeUrl = "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=" + encodeURIComponent(currentUrl) + "&count_bg=%2300f2ff&title_bg=%230d1117&title=%EB%B0%A9%EB%AC%B8%EC%9E%90&edge_flat=false";
-
-          html += '<div class="intro-box"><h1>운명의 나침반</h1><p>천문 데이터 기반 프리미엄 운세 카운슬링</p>' +
-            '<div style="margin-top: 18px;"><img src="' + counterBadgeUrl + '"></div></div>' +
-            '<div class="card">' +
-            '<label>대상자 성함</label><input type="text" id="ui-name" value="' + state.name + '" placeholder="성함을 입력하세요">' +
-            '<label>입력할 달력 체계</label><div class="btn-row"><div id="s-btn" class="t-btn ' + (state.cal==='solar'?'on':'') + '" onclick="window.updateCal(\'solar\')">양력</div><div id="l-btn" class="t-btn ' + (state.cal==='lunar'?'on':'') + '" onclick="window.updateCal(\'lunar\')">음력</div></div>' +
+          html += '<div class="intro-box"><h1>운명의 나침반</h1><p>천문 데이터 기반 프리미엄 운세 카운슬링</p><div style="margin-top:15px;"><img src="'+badgeUrl+'"></div></div>' +
+            '<div class="card"><label>대상자 성함</label><input type="text" id="ui-name" value="'+state.name+'" placeholder="성함을 입력하세요">' +
+            '<label>력 선택</label><div class="btn-row"><div id="s-btn" class="t-btn '+(state.cal==='solar'?'on':'')+'" onclick="window.updateCal(\'solar\')">양력</div><div id="l-btn" class="t-btn '+(state.cal==='lunar'?'on':'')+'" onclick="window.updateCal(\'lunar\')">음력</div></div>' +
             '<label>생년월일</label><div class="btn-row"><select id="ui-y"></select><select id="ui-m"></select><select id="ui-d"></select></div>' +
-            '<label>태어난 시각</label><select id="ui-t">' +
-            '<option value="미정">모름/미정</option><option value="자">자시</option><option value="축">축시</option><option value="인">인시</option><option value="묘">묘시</option><option value="진">진시</option><option value="사">사시</option><option value="오">오시</option><option value="미">미시</option><option value="신">신시</option><option value="유">유시</option><option value="술">술시</option><option value="해">해시</option></select>' +
-            '</div>' +
-            '<div class="method-grid">' +
-            '<div class="method-card" onclick="window.executeFlow(\'saju\')"><h2>📜 정통 사주 심층 분석</h2><p>본인의 60갑자 기질과 재물 흐름 상세 풀이</p></div>' +
-            '<div class="method-card" onclick="window.executeFlow(\'tojeong\')"><h2>🗓️ ' + currentYear + '년 토정비결</h2><p>144괘 알고리즘으로 분석한 올해 승부처</p></div>' +
-            '<div class="method-card" onclick="window.executeFlow(\'star\')"><h2>✨ 서양 점성술</h2><p>황도 12궁 좌표로 분석한 당신만의 매력 자본</p></div>' +
-            '<div class="method-card" onclick="window.renderPage(\'tarot-pick\')"><h2>🃏 타로 무의식 스캔</h2><p>현재 딜레마를 타파할 영적 솔루션</p></div>' +
-            '</div>';
-        } 
-        else if (view === 'tarot-pick') {
-          html += '<div class="intro-box"><h1>무의식의 거울</h1><p>운명이 이끄는 카드 한 장을 고르십시오.</p></div>' +
-                  '<div class="tarot-pick">' +
-                  '<div class="t-card" onclick="window.buildReport(\'tarot\')">🔮</div>' +
-                  '<div class="t-card" onclick="window.buildReport(\'tarot\')">🔮</div>' +
-                  '<div class="t-card" onclick="window.buildReport(\'tarot\')">🔮</div>' +
-                  '</div>';
+            '</div><div class="method-grid"><div class="method-card" onclick="window.executeFlow(\'saju\')"><h2>📜 정밀 사주 분석</h2><p>기질과 재물 흐름 상세 풀이</p></div>' +
+            '<div class="method-card" onclick="window.executeFlow(\'tojeong\')"><h2>🗓️ '+currentYear+'년 토정비결</h2><p>올해 상/하반기 승부처 제시</p></div>' +
+            '<div class="method-card" onclick="window.renderPage(\'tarot-pick\')"><h2>🃏 타로 무의식 스캔</h2><p>영적 솔루션 도출</p></div></div>';
+        } else if (view === 'tarot-pick') {
+          html += '<div class="intro-box"><h1>무의식의 거울</h1><p>카드를 선택하십시오.</p></div><div class="tarot-pick">' + '<div class="t-card" onclick="window.buildReport(\'tarot\')">🔮</div>'.repeat(3) + '</div>';
+        } else if (view === 'result') {
+          html += '<div id="loader"><h2>DECODING DESTINY...</h2><div class="p-fill" id="p-fill"></div></div><div id="res-content" style="display:none;"><div class="intro-box"><h1 id="res-title"></h1></div><div id="report-body"></div><button class="btn-run" style="background:#1a1d23; color:#fff; margin-top:40px;" onclick="window.renderPage(\'home\')">돌아가기</button></div>';
         }
-        else if (view === 'result') {
-          html += '<div id="loader"><h2>DECODING DESTINY MATRIX...</h2><div class="p-bar"><div class="p-fill" id="p-fill"></div></div></div>' +
-                  '<div id="res-content" style="display:none;">' +
-                  '<div class="intro-box"><h1 id="res-title"></h1></div>' +
-                  '<div id="report-body"></div>' +
-                  '<button class="btn-run" style="background:#1a1d23; color:#fff; margin-top:40px;" onclick="window.renderPage(\'home\')">홈 화면으로 돌아가기</button></div>';
-        }
-
-        html += '</div></div>' +
-          '<nav class="nav">' +
-          '<div class="nav-i ' + (view==='home'?'on':'') + '" onclick="window.renderPage(\'home\')"><b>🏠</b>홈</div>' +
-          '<div class="nav-i" onclick="window.executeFlow(\'saju\')"><b>📜</b>사주</div>' +
-          '<div class="nav-i" onclick="window.executeFlow(\'tojeong\')"><b>🗓️</b>토정</div>' +
-          '<div class="nav-i" onclick="window.executeFlow(\'star\')"><b>✨</b>별자리</div>' +
-          '<div class="nav-i" onclick="window.executeFlow(\'tarot\')"><b>🃏</b>타로</div>' +
-          '</nav>';
-        
-        shadow.innerHTML = html;
-        if (view === 'home') fillSelects();
+        html += '</div></div><nav class="nav"><div class="nav-i '+(view==='home'?'on':'')+'" onclick="window.renderPage(\'home\')"><b>🏠</b>홈</div><div class="nav-i" onclick="window.executeFlow(\'saju\')"><b>📜</b>사주</div><div class="nav-i" onclick="window.executeFlow(\'tojeong\')"><b>🗓️</b>토정</div><div class="nav-i" onclick="window.executeFlow(\'tarot\')"><b>🃏</b>타로</div></nav>';
+        shadow.innerHTML = html; if (view === 'home') fillSelects();
       };
 
-      window.updateCal = function(t) { 
-        state.cal = t; 
-        window.renderPage('home');
-      };
-
+      window.updateCal = function(t) { state.cal = t; window.renderPage('home'); };
       window.executeFlow = function(type) {
-        var nInput = $('ui-name');
-        if (nInput) {
-          state.name = nInput.value;
-          state.y = parseInt($('ui-y').value);
-          state.m = parseInt($('ui-m').value);
-          state.d = parseInt($('ui-d').value);
-          state.time = $('ui-t').value;
-        }
-        if(!state.name) { alert("성함을 입력해 주십시오."); return; }
-        
-        if(type === 'tarot') { window.renderPage('tarot-pick'); }
-        else { window.buildReport(type); }
+        var n = $('ui-name'); if(n) state.name = n.value; if(!state.name) return alert("성함을 입력하십시오.");
+        state.y = $('ui-y').value; state.m = $('ui-m').value; state.d = $('ui-d').value;
+        if(type === 'tarot') window.renderPage('tarot-pick'); else window.buildReport(type);
       };
 
       window.buildReport = function(type) {
         window.renderPage('result');
-        var p = 0; var fill = $('p-fill');
-        var itv = setInterval(function() {
-          p += 5; fill.style.width = p + '%';
-          if(p >= 100) { clearInterval(itv); generateText(type); }
-        }, 40);
+        var p = 0; var itv = setInterval(function() { p += 10; $('p-fill').style.width = p + '%'; if(p >= 100) { clearInterval(itv); generateText(type); } }, 40);
       };
 
       async function generateText(type) {
-        $('loader').style.display = 'none';
-        $('res-content').style.display = 'block';
+        $('loader').style.display = 'none'; $('res-content').style.display = 'block';
+        var sol = Solar.fromYmd(parseInt(state.y), parseInt(state.m), parseInt(state.d));
+        var bazi = sol.getLunar().getEightChar(); var myGan = bazi.getDayGan(); var ohaeng = getOhaeng(myGan);
+        var seed = state.name.split('').reduce((a,b)=>a+b.charCodeAt(0),0) + sol.getDay();
+        $('res-title').innerText = state.name + "님의 운세 리포트";
         
-        var title = $('res-title');
-        var body = $('report-body');
-        
-        var solarDate, lunarDate;
-        var isLunarLoaded = (typeof Solar !== 'undefined' && typeof Lunar !== 'undefined');
-        
-        if (isLunarLoaded) {
-          if (state.cal === 'solar') {
-            solarDate = Solar.fromYmd(state.y, state.m, state.d);
-            lunarDate = solarDate.getLunar();
-          } else {
-            lunarDate = Lunar.fromYmd(state.y, state.m, state.d);
-            solarDate = lunarDate.getSolar();
-          }
+        var reportHTML = "<div class='process-dashboard'><h3>📊 ANALYSIS DATA</h3><p>사주명식: "+bazi.getYearGan()+bazi.getYearZhi()+"년 "+bazi.getMonthGan()+bazi.getMonthZhi()+"월 "+bazi.getDayGan()+bazi.getDayZhi()+"일 ("+ohaeng+")</p></div>";
+        var sections = [];
+        if(type === 'saju') {
+          sections = [{ t: "🌌 본원의 거울", s: "당신은 "+ohaeng+"의 에너지를 품고 있습니다.", d: "<p>"+ganTraits[myGan[0]]+"</p>" }, { t: "⏳ 인생 총운", s: "인생의 사계절을 해독합니다.", d: expandDB.lifetimeBase(seed) }, { t: "💼 재물 테크 전략", s: "가치 창출이 유리합니다.", d: expandDB.wealthBase(seed) }];
+        } else if(type === 'tojeong') {
+          var to = tojeongDB[seed % tojeongDB.length];
+          sections = [{ t: "📜 괘사 및 총운", s: "「 " + to.h + " 」", d: "<p>" + to.d1 + "</p>" }, { t: "🎯 성공 전략", s: "운의 흐름이 핵심입니다.", d: "<p>" + to.d2 + "</p>" }];
+        } else {
+          var tk = tarotDB[seed % tarotDB.length];
+          sections = [{ t: "🃏 타로 판독: "+tk.n, s: tk.s, d: "<p>"+tk.d+"</p>" }];
         }
 
-        var sY = isLunarLoaded ? solarDate.getYear() : state.y;
-        var sM = isLunarLoaded ? solarDate.getMonth() : state.m;
-        var sD = isLunarLoaded ? solarDate.getDay() : state.d;
-
-        var myGan = "甲"; var baziStr = "데이터 산출 중";
-        if (isLunarLoaded) {
-          var bazi = lunarDate.getEightChar();
-          myGan = bazi.getDayGan();
-          baziStr = bazi.getYearGan()+bazi.getYearZhi()+"년 "+bazi.getMonthGan()+bazi.getMonthZhi()+"월 "+bazi.getDayGan()+bazi.getDayZhi()+"일";
-        }
-        
-        var ohaeng = getOhaeng(myGan);
-        var seed = 0;
-        for(var k=0; k<state.name.length; k++) { seed += state.name.charCodeAt(k); }
-        seed += (sY + sM + sD);
-
-        var processHtml = ""; var sections = [];
-
-        if (type === 'saju') {
-          title.innerText = state.name + "님의 프리미엄 사주 리포트";
-          processHtml = "<div class='process-dashboard'><h3>📊 명리학 연산 데이터</h3><div class='data-grid'>" +
-            "<div class='data-item'><b>입력날짜</b>" + state.y + "." + state.m + "." + state.d + "</div>" +
-            "<div class='data-item'><b>사주명식</b>" + baziStr + "</div>" +
-            "</div><div class='process-text'>" + expandDB.sajuMethod + "</div></div>";
-          
-          sections = [
-            { t: "🌌 본원의 거울", s: "당신은 흔들리지 않는 " + ohaeng + "의 기운을 품고 있습니다.", d: "<p>" + ganTraits[myGan] + "</p>" },
-            { t: "⏳ 인생 총운", s: "인생은 당신의 선택이 모여 완성되는 서사시입니다.", d: expandDB.lifetimeBase(seed) },
-            { t: "💼 재물 테크 전략", s: "능동적인 가치 창출이 유리합니다.", d: expandDB.wealthBase(seed) }
-          ];
-        } 
-        else if (type === 'tojeong') {
-          title.innerText = state.name + "님의 " + currentYear + "년 토정비결";
-          var tojeong = tojeongDB[seed % tojeongDB.length];
-          sections = [
-            { t: "📜 괘사 및 총운", s: "「 " + tojeong.h + " 」", d: "<p>" + tojeong.d1 + "</p>" },
-            { t: "🎯 성공 전략", s: "운의 흐름을 읽는 것이 최고의 무기입니다.", d: "<p>" + tojeong.d2 + "</p>" }
-          ];
-        }
-        else if (type === 'star') {
-          var signKey = getStarSign(sM, sD);
-          sections = [{ t: "✨ " + signKey + "자리 영혼의 매력", s: starTraits[signKey], d: "<p>당신은 고유한 우주적 지문을 타고났습니다. 본인의 개성을 발산할 때 가장 빛납니다.</p>" }];
-        }
-        else {
-          var pick = tarotDB[seed % tarotDB.length];
-          sections = [{ t: "🃏 타로 판독: " + pick.n, s: pick.s, d: "<p>" + pick.d + "</p>" }];
-        }
-
-        var htmlData = processHtml;
         for(var i=0; i<sections.length; i++) {
-          htmlData += '<div class="report-sec" id="rsec-' + i + '">' +
-                      '<div class="sec-t">' + sections[i].t + '</div>' +
-                      '<div class="sum-box">" ' + sections[i].s + ' "</div>' +
-                      '<div class="det-text" id="rdet-' + i + '"></div></div>';
+          reportHTML += '<div class="report-sec" id="rsec-' + i + '"><div class="sec-t">' + sections[i].t + '</div><div class="sum-box">" ' + sections[i].s + ' "</div><div class="det-text">' + sections[i].d + '</div></div>';
         }
 
-        // --- 수익화 섹션 (쿠팡 파트너스 반영) ---
-        var luckyItems = ["메탈 시계", "가죽 지갑", "향수 디퓨저", "원석 팔찌"];
-        var selectedItem = luckyItems[seed % 4];
-        var dirs = ["정북쪽", "동남쪽", "서북쪽", "남서쪽"];
-        var colors = ["코발트 블루", "딥 그린", "골드", "버건디"];
+        // --- 수익화 및 필수 문구 반영 섹션 ---
+        var items = {"목(木)":"천연 식물 화분","화(火)":"조명 무드등","토(土)":"가죽 지갑","금(金)":"메탈 시계","수(水)":"텀블러"};
+        var selectedItem = items[ohaeng] || "행운 아이템";
 
-        htmlData += '<div class="card" style="margin-top:50px; background:linear-gradient(180deg, #0d1117, #000); border:1px solid #00f2ff;">' +
-                    '<h3 style="color:#00f2ff; margin:0 0 15px; font-size:1.35rem; text-align:center; font-weight:900;">✨ ' + state.name + '님을 위한 개운(開運) 액션</h3>' +
-                    '<p style="text-align:center; font-size:0.95rem; color:#768390; margin-bottom:25px;">막힌 운을 뚫어주는 전용 아이템과 행운의 기운입니다.</p>' +
-                    '<div class="lucky-grid">' +
-                    '<div class="l-item">행운의 방향<br><b style="color:#ffd700;">' + dirs[seed % 4] + '</b></div>' +
-                    '<div class="l-item">길한 색상<br><b style="color:#ffd700;">' + colors[seed % 4] + '</b></div>' +
-                    '<div class="l-item" style="grid-column: span 2;">오늘의 추천 행운 아이템<br><b style="color:#ffd700; font-size:1.3rem;">' + selectedItem + '</b></div>' +
-                    '</div>' +
-                    '<div style="text-align:center; margin-top:35px;">' +
-                    '<a href="https://link.coupang.com/a/erqHD0?q=' + encodeURIComponent(selectedItem) + '" style="background:#00f2ff; color:#000; padding:18px 25px; border-radius:15px; text-decoration:none; font-weight:900; display:inline-block; font-size:1.1rem; box-shadow:0 10px 20px rgba(0,242,255,0.25);" target="_blank">👉 나의 행운 아이템 최저가 확인하기</a>' +
-                    '</div></div>';
+        reportHTML += '<div class="card" style="margin-top:50px; border:1px solid #00f2ff; text-align:center;">' +
+          '<h3 style="color:#00f2ff; margin-bottom:15px; font-weight:900;">✨ '+state.name+'님을 위한 개운 비책</h3>' +
+          '<div class="sum-box" style="margin-bottom:25px;">오늘의 행운템: <b>'+selectedItem+'</b></div>' +
+          '<a href="https://link.coupang.com/a/erqHD0?q=' + encodeURIComponent(selectedItem) + '" style="background:#00f2ff; color:#000; padding:18px 25px; border-radius:15px; text-decoration:none; font-weight:900; display:inline-block;" target="_blank">👉 '+selectedItem+' 최저가 확인하기</a>' +
+          '<div class="coupang-disclaimer">이 서비스는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div></div>';
 
-        body.innerHTML = htmlData;
+        $('report-body').innerHTML = reportHTML;
         $('app-wrapper').scrollTo({top: 0, behavior: 'smooth'});
-
-        for(var j=0; j<sections.length; j++) {
-          var el = $('rdet-' + j); el.innerHTML = sections[j].d;
-          (function(idx) { setTimeout(function() { $('rsec-' + idx).classList.add('show'); }, idx * 200); })(j);
-        }
+        shadow.querySelectorAll('.report-sec').forEach((el, i) => setTimeout(() => el.classList.add('show'), i * 200));
       }
 
       function fillSelects() {
         var sy = $('ui-y'), sm = $('ui-m'), sd = $('ui-d');
-        for(var i=currentYear; i>=1940; i--) { var o = document.createElement('option'); o.value=i; o.text=i+"년"; sy.appendChild(o); } sy.value = state.y;
-        for(var i=1; i<=12; i++) { var o = document.createElement('option'); o.value=i; o.text=i+"월"; sm.appendChild(o); } sm.value = state.m;
-        for(var i=1; i<=31; i++) { var o = document.createElement('option'); o.value=i; o.text=i+"일"; sd.appendChild(o); } sd.value = state.d;
+        for(var i=currentYear; i>=1940; i--) sy.add(new Option(i+'년', i)); sy.value = state.y;
+        for(var i=1; i<=12; i++) sm.add(new Option(i+'월', i)); sm.value = state.m;
+        for(var i=1; i<=31; i++) sd.add(new Option(i+'일', i)); sd.value = state.d;
       }
-
-      function initApp() {
-        if (typeof Lunar === 'undefined') { setTimeout(initApp, 100); return; }
-        window.renderPage('home');
-      }
+      function initApp() { if (typeof Lunar === 'undefined') { setTimeout(initApp, 100); return; } window.renderPage('home'); }
       initApp();
-
     })();
   </script>
 </body>
