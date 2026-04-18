@@ -1,223 +1,204 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>정통 사주 분석</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>운세 통합 플랫폼</title>
 
 <style>
-body {
-  margin:0;
-  font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;
-  text-align:center;
-}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f1a;
+    color: #fff;
+  }
 
-.container {
-  padding:40px;
-}
+  header {
+    text-align: center;
+    padding: 24px;
+    font-size: 22px;
+    font-weight: bold;
+    background: #1b1b2e;
+  }
 
-h1 {
-  font-size:32px;
-}
+  .container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+  }
 
-input, button {
-  padding:12px;
-  margin:10px;
-  border-radius:8px;
-  border:none;
-}
+  .input-box {
+    background: #1c1c2f;
+    padding: 20px;
+    border-radius: 12px;
+  }
 
-button {
-  background:#ffcc00;
-  font-weight:bold;
-  cursor:pointer;
-}
+  input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+  }
 
-.result {
-  margin-top:30px;
-  background:rgba(0,0,0,0.4);
-  padding:20px;
-  border-radius:12px;
-}
+  .btn-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+  }
 
-.counter {
-  margin-top:20px;
-  font-size:14px;
-  opacity:0.8;
-}
+  button {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #6c5ce7;
+    color: white;
+    font-weight: bold;
+  }
 
-a.btn {
-  display:inline-block;
-  margin-top:20px;
-  padding:12px 20px;
-  background:#ffcc00;
-  color:#000;
-  border-radius:10px;
-  text-decoration:none;
-  font-weight:bold;
-}
+  button:hover {
+    background: #836fff;
+  }
+
+  .result {
+    margin-top: 20px;
+    padding: 20px;
+    background: #141427;
+    border-radius: 12px;
+    min-height: 120px;
+  }
+
+  .card {
+    background: #222244;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .affiliate {
+    margin-top: 20px;
+    padding: 15px;
+    background: #2a1f3d;
+    border-radius: 10px;
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .btn-group {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 
 <body>
 
+<header>
+  운세 통합 플랫폼 (사주 · 토정비결 · 타로 · 별자리)
+</header>
+
 <div class="container">
 
-<h1>🔮 정통 사주 분석</h1>
+  <!-- 입력 영역 -->
+  <div class="input-box">
+    <label>이름</label>
+    <input type="text" id="name" placeholder="이름 입력">
 
-<input type="date" id="birth">
-<input type="time" id="time">
-<br>
-<button onclick="analyze()">내 사주 보기</button>
+    <label>생년월일</label>
+    <input type="date" id="birthdate">
 
-<div class="counter">
-👀 오늘 방문자: <span id="today"></span> / 총 방문자: <span id="total"></span>
+    <label>출생시간 (선택)</label>
+    <input type="time" id="birthtime">
+
+    <div class="btn-group">
+      <button onclick="runFortune('saju')">사주 보기</button>
+      <button onclick="runFortune('tojeong')">토정비결</button>
+      <button onclick="runFortune('tarot')">타로</button>
+      <button onclick="runFortune('zodiac')">별자리</button>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div class="result" id="result">
+    결과가 여기에 표시됩니다.
+  </div>
+
+  <!-- 추천 영역 (수익 연결) -->
+  <div class="affiliate" id="affiliateBox">
+    <p>당신의 운과 잘 맞는 추천 아이템</p>
+    <a href="https://link.coupang.com/a/erylCA" target="_blank">
+      👉 지금 확인하기
+    </a>
+  </div>
+
 </div>
 
-<div class="result" id="result"></div>
-
-</div>
+<footer>
+  © Fortune Platform
+</footer>
 
 <script>
+function runFortune(type) {
+  const name = document.getElementById("name").value || "사용자";
+  const resultBox = document.getElementById("result");
+  const affiliateBox = document.getElementById("affiliateBox");
 
-// ---------------- 방문자 카운터 (localStorage)
-// ----------------
-let todayKey = new Date().toDateString();
+  let text = "";
 
-let total = localStorage.getItem("total") || 0;
-let today = localStorage.getItem(todayKey) || 0;
+  if (type === "saju") {
+    text = `
+    ${name}님의 사주 분석
 
-total++;
-today++;
-
-localStorage.setItem("total", total);
-localStorage.setItem(todayKey, today);
-
-document.getElementById("total").innerText = total;
-document.getElementById("today").innerText = today;
-
-// ---------------- 사주 기본 데이터
-// ----------------
-const stems = ["갑","을","병","정","무","기","경","신","임","계"];
-const branches = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
-
-const elementMap = {
-  "갑":"목","을":"목","병":"화","정":"화",
-  "무":"토","기":"토","경":"금","신":"금",
-  "임":"수","계":"수"
-};
-
-// ---------------- 기본 함수
-// ----------------
-function adjustYear(date){
-  let y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
-  if(m<2 || (m===2 && d<4)) return y-1;
-  return y;
-}
-
-function getYearPillar(year){
-  return stems[(year-4)%10] + branches[(year-4)%12];
-}
-
-function getDayPillar(date){
-  let base=new Date(1900,0,1);
-  let diff=Math.floor((date-base)/(1000*60*60*24));
-  let i=diff%60;
-  return stems[i%10]+branches[i%12];
-}
-
-function getHourBranch(hour){
-  return branches[Math.floor((hour+1)/2)%12];
-}
-
-function getHourStem(dayStemIndex, hourBranchIndex){
-  return stems[(dayStemIndex*2 + hourBranchIndex)%10];
-}
-
-// ---------------- 오행 계산
-// ----------------
-function countElements(pillars){
-  let c={목:0,화:0,토:0,금:0,수:0};
-  pillars.forEach(p=>{
-    c[elementMap[p[0]]]++;
-  });
-  return c;
-}
-
-// ---------------- 해석 생성
-// ----------------
-function generateText(dayElement, elements){
-
-  let min = Object.keys(elements).reduce((a,b)=>elements[a]<elements[b]?a:b);
-
-  let text = `
-  당신은 <b>${dayElement}</b> 기운 중심의 사주입니다.<br><br>
-  이 기운은 삶의 방향성과 성격을 결정짓는 핵심 요소입니다.<br><br>
-
-  현재 사주에서 <b>${min}</b> 기운이 부족합니다.<br>
-  이로 인해 특정 상황에서 불균형이 발생할 수 있습니다.<br><br>
-  `;
-
-  if(min==="수"){
-    text += "감정 소모, 피로 누적, 집중력 저하로 이어질 수 있습니다.<br>";
-  }
-  if(min==="금"){
-    text += "결단력 부족, 정리력 저하로 이어질 수 있습니다.<br>";
+    - 초년운: 성장과 변화의 흐름
+    - 중년운: 안정과 성취의 시기
+    - 말년운: 결실과 정리의 운
+    - 재물운: 점진적 상승 흐름
+    - 연애운: 감정의 균형 중요
+    - 건강운: 스트레스 관리 필요
+    `;
   }
 
-  text += `
-  <br>
-  👉 이 부족한 기운을 보완하는 것이 중요합니다.
-  `;
+  if (type === "tojeong") {
+    text = `
+    토정비결 분석 결과
 
-  return {text, min};
+    올해는 변화와 선택의 기로에 서 있는 해입니다.
+    작은 선택이 큰 흐름을 결정합니다.
+    `;
+  }
+
+  if (type === "tarot") {
+    text = `
+    타로 결과
+
+    "현재의 선택이 미래를 결정합니다."
+    직관을 믿는 것이 핵심입니다.
+    `;
+  }
+
+  if (type === "zodiac") {
+    text = `
+    별자리 운세
+
+    오늘은 감정보다 이성이 중요한 날입니다.
+    관계에서 균형이 필요합니다.
+    `;
+  }
+
+  resultBox.innerHTML = "<div class='card'>" + text + "</div>";
+
+  // 자연스럽게 추천 노출 (강요 느낌 없이)
+  affiliateBox.style.display = "block";
 }
-
-// ---------------- 실행
-// ----------------
-function analyze(){
-
-  let date=new Date(document.getElementById("birth").value);
-  let hour=parseInt(document.getElementById("time").value.split(":")[0]);
-
-  let year=getYearPillar(adjustYear(date));
-  let day=getDayPillar(date);
-
-  let dayStemIndex=stems.indexOf(day[0]);
-
-  let hBranch=getHourBranch(hour);
-  let hIndex=branches.indexOf(hBranch);
-  let hStem=getHourStem(dayStemIndex,hIndex);
-
-  let hourPillar=hStem+hBranch;
-
-  let pillars=[year,day,hourPillar];
-
-  let elements=countElements(pillars);
-  let dayElement=elementMap[day[0]];
-
-  let {text,min}=generateText(dayElement,elements);
-
-  document.getElementById("result").innerHTML = `
-    <b>📌 연주:</b> ${year}<br>
-    <b>📌 일주:</b> ${day}<br>
-    <b>📌 시주:</b> ${hourPillar}<br><br>
-
-    <b>🌿 오행:</b> 
-    목:${elements.목} 화:${elements.화} 토:${elements.토} 금:${elements.금} 수:${elements.수}
-    <br><br>
-
-    ${text}
-
-    <br><br>
-
-    <a class="btn" href="https://link.coupang.com/a/erylCA" target="_blank">
-    👉 당신에게 필요한 행운 아이템 보기
-    </a>
-  `;
-}
-
 </script>
 
 </body>
