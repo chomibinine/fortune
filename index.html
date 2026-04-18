@@ -66,8 +66,12 @@ box-shadow:0 0 18px rgba(127,90,240,0.35);
 <div id="summary" class="summary"></div>
 </div>
 
+<div class="card">
+<div class="title">사주 분석 (종합)</div>
+<div id="saju" class="result"></div>
+</div>
+
 <div class="grid">
-<div class="card"><div class="title">사주 분석</div><div id="saju" class="result"></div></div>
 <div class="card"><div class="title">토정비결</div><div id="tojeong" class="result"></div></div>
 <div class="card"><div class="title">별자리</div><div id="zodiac" class="result"></div></div>
 <div class="card"><div class="title">타로</div><div id="tarot" class="result"></div></div>
@@ -82,51 +86,47 @@ box-shadow:0 0 18px rgba(127,90,240,0.35);
 
 <script>
 
+function pick(arr,seed){return arr[seed%arr.length];}
+function hash(str){let h=0;for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i);h|=0;}return Math.abs(h);}
+
+const engine={
+emotion:["안정과 변화 공존","내부 긴장 증가","전환 직전 상태"],
+risk:["충동 결정 위험","감정 판단 주의","외부 변수 영향 큼"],
+advice:["속도 조절","장기 관점 유지","재검토 필요"],
+change:["구조 변화 진행","흐름 재정렬","선택이 결과 결정"]
+};
+
 function saju(name,birth){
-let d=new Date(birth);
-let y=d.getFullYear();
+let s=hash(name+birth);
 
-return `${name}님의 사주 분석:\n\n[1] 타고난 기질\n겉으로는 안정적이지만 내면은 변화 욕구가 강한 구조입니다.\n\n[2] 현재 흐름\n지금은 기존 패턴이 흔들리는 재정렬 시기입니다.\n\n[3] 인간관계\n가까운 사람과의 관계에서 선택과 거리 조절이 중요해집니다.\n\n[4] 재물/일\n급격한 상승보다 점진적 누적 구조가 유리합니다.\n\n[5] 위험 구간\n감정 기반 결정이 손실로 이어질 수 있습니다.\n\n[6] 조언\n속도를 늦추고 방향을 재설계하는 것이 핵심입니다.`;
+let wealth=["재물 흐름은 안정적이나 급격한 상승보다는 축적형 구조","수입보다 지출 관리가 핵심","기회는 중기 이후 강화" ];
+let love=["관계는 신중하게 발전하는 구조","초기 열정보다 안정적 관계 중요","인연은 늦게 깊어지는 타입"];
+let health=["스트레스 누적 주의","체력보다 정신 피로 관리 중요","생활 리듬이 건강을 좌우"];
+let life=["초년: 기반 형성","중년: 선택과 확장","말년: 안정 구조"];
+
+return `종합 사주 분석\n\n[성향]\n안정 기반 + 변화 가능성 구조\n\n[초년/중년/말년]\n${life.join(" | ")}\n\n[재물운]\n${pick(wealth,s)}\n\n[연애운]\n${pick(love,s+1)}\n\n[건강운]\n${pick(health,s+2)}\n\n[현재 흐름]\n${pick(engine.change,s)}\n\n[조언]\n${pick(engine.advice,s)}`;
 }
 
-function tojeong(){
-let arr=["건(乾)","곤(坤)","태(泰)","비(否)","둔(屯)","몽(蒙)"];
-let g=arr[Math.floor(Math.random()*arr.length)];
+function tojeong(){let g=["건","곤","태","비","둔","몽"];let s=Math.random()*100|0;
+return `괘: ${g[s%6]}\n\n${pick(engine.change,s)}\n${pick(engine.advice,s+1)}`;}
 
-return `괘: ${g}\n\n[1] 의미\n이 괘는 변화 직전의 긴장 상태를 의미합니다.\n\n[2] 현재 상황\n겉으로는 안정이나 내부적으로는 균열이 진행 중입니다.\n\n[3] 흐름\n곧 선택의 결과가 명확히 드러나는 시점입니다.\n\n[4] 조언\n서두르지 말고 관찰 후 결정하는 것이 중요합니다.`;
-}
+function zodiac(){let s=Math.random()*100|0;
+return `${pick(engine.emotion,s)}\n${pick(engine.risk,s+1)}`;}
 
-function zodiac(){
-return `[1] 성향\n감정과 직관이 강하게 작용하는 시기입니다.\n\n[2] 흐름\n외부보다 내부 감정 변화가 더 큰 영향을 줍니다.\n\n[3] 관계\n오해가 생기기 쉬우므로 표현을 명확히 해야 합니다.\n\n[4] 조언\n즉흥적인 판단은 피하는 것이 좋습니다.`;
-}
+function tarot(){let c=["Fool","Sun","Tower","Star"];let s=Math.random()*100|0;
+return `카드: ${c[s%4]}\n\n${pick(engine.change,s)}\n${pick(engine.advice,s+1)}`;}
 
-function tarot(){
-let arr=["Fool","Magician","Sun","Tower","Star"];
-let c=arr[Math.floor(Math.random()*arr.length)];
+function flow(){let s=Math.random()*100|0;
+return `인생 흐름 지수: ${s}\n\n${pick(engine.change,s)}\n${pick(engine.emotion,s+1)}`;}
 
-return `카드: ${c}\n\n[1] 상징\n현재 선택은 방향성 자체를 바꾸는 요소입니다.\n\n[2] 해석\n기회와 위험이 동시에 존재하는 구간입니다.\n\n[3] 메시지\n지금의 결정은 이후 흐름에 강하게 영향을 줍니다.`;
-}
-
-function flow(){
-let v=Math.floor(Math.random()*100);
-return `[10년 흐름]\n지수: ${v}\n\n[구조]\n상승과 정체가 반복되는 변곡 구조입니다.\n\n[해석]\n현재는 방향이 결정되기 직전 구간입니다.`;
-}
-
-function runAll(){
-let name=document.getElementById('name').value;
-let birth=document.getElementById('birth').value;
-if(!birth)return alert('입력 필요');
-
-document.getElementById('resultArea').classList.remove('hidden');
-
-document.getElementById('summary').innerText=
-"당신은 현재 중요한 인생의 재설계 구간에 있습니다.\n이 시기의 선택은 장기 흐름에 직접 영향을 줍니다.";
-
-document.getElementById('saju').innerText=saju(name,birth);
-document.getElementById('tojeong').innerText=tojeong();
-document.getElementById('zodiac').innerText=zodiac();
-document.getElementById('tarot').innerText=tarot();
-document.getElementById('flow').innerText=flow();
+function runAll(){let n=name.value,b=birth.value;if(!b)return alert('입력');
+resultArea.classList.remove('hidden');
+summary.innerText="현재 인생 구조는 변화 직전 단계입니다.";
+saju.innerText=saju(n,b);
+tojeong.innerText=tojeong();
+zodiac.innerText=zodiac();
+tarot.innerText=tarot();
+flow.innerText=flow();
 }
 
 function scrollTopBtn(){window.scrollTo({top:0,behavior:'smooth'});}
