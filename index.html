@@ -10,113 +10,256 @@
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
         :root {
-            --bg: #05070a;
-            --card: #0d1117;
-            --accent: #00f2ff;
-            --gold: #ffd700;
-            --border: #1a1d23;
-            --text-muted: #768390;
+            --bg-deep: #05070a;
+            --bg-gradient: radial-gradient(circle at top right, #0d121d 0%, #05070a 100%);
+            --card-glass: rgba(13, 17, 23, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-cyan: #00f2ff;
+            --premium-gold: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --gold-text: #ffd700;
             --text-main: #adbac7;
             --white: #ffffff;
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: var(--text-main); line-height: 1.8; overflow-x: hidden; }
+        body { 
+            margin: 0; 
+            background: var(--bg-deep); 
+            background-image: var(--bg-gradient);
+            color: var(--text-main); 
+            line-height: 1.9; 
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-        .app-container { max-width: 600px; margin: 0 auto; padding: 20px 20px 140px; }
+        .app-container { max-width: 700px; margin: 0 auto; padding: 0 20px 140px; }
 
-        /* --- Header --- */
-        .header { text-align: center; padding: 60px 0 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
-        .header h1 { color: var(--accent); font-size: 2.2rem; font-weight: 900; letter-spacing: 5px; margin: 0; text-shadow: 0 0 20px rgba(0,242,255,0.4); }
-        .header p { margin-top: 10px; font-size: 0.9rem; opacity: 0.7; }
+        /* --- Elegant Header --- */
+        .header { text-align: center; padding: 80px 0 50px; }
+        .header h1 { 
+            color: #fff;
+            font-size: 2.6rem; 
+            font-weight: 900; 
+            letter-spacing: 10px; 
+            margin: 0; 
+            background: linear-gradient(to bottom, #fff 40%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+        }
+        .header p { 
+            margin-top: 15px; 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
 
-        /* --- Input Card --- */
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 28px; padding: 30px; margin-bottom: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        label { display: block; margin-bottom: 8px; font-weight: 800; color: var(--accent); font-size: 0.8rem; text-transform: uppercase; }
-        input, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 1rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--accent); }
-        .select-row { display: flex; gap: 8px; margin-bottom: 20px; }
-        .select-row select { margin-bottom: 0; }
+        /* --- Premium Cards --- */
+        .card { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border); 
+            border-radius: 35px; 
+            padding: 40px; 
+            margin-bottom: 35px; 
+            box-shadow: var(--shadow-soft);
+        }
+        label { display: block; margin-bottom: 12px; font-weight: 800; color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+        input, select { 
+            width: 100%; 
+            padding: 20px; 
+            border-radius: 18px; 
+            border: 1px solid var(--card-border); 
+            background: rgba(0, 0, 0, 0.4); 
+            color: #fff; 
+            font-size: 1.05rem; 
+            margin-bottom: 25px; 
+            outline: none; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        input:focus, select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.25); }
+        .select-row { display: flex; gap: 12px; margin-bottom: 10px; }
+        .select-row select { margin-bottom: 15px; }
 
         /* --- Menu Grid --- */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 40px; }
-        .menu-item { background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 30px 15px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .menu-item:hover { border-color: var(--accent); transform: translateY(-5px); }
-        .menu-item b { font-size: 2.2rem; display: block; margin-bottom: 10px; font-style: normal; }
-        .menu-item h3 { margin: 0; font-size: 1.05rem; color: var(--white); font-weight: 800; }
-        .menu-item p { margin: 5px 0 0; font-size: 0.75rem; color: var(--text-muted); }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 60px; }
+        .menu-item { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border); 
+            border-radius: 30px; 
+            padding: 45px 25px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.4s ease; 
+        }
+        .menu-item:hover { 
+            border-color: var(--accent-cyan); 
+            transform: translateY(-10px);
+            background: rgba(0, 242, 255, 0.05);
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.1);
+        }
+        .menu-item b { font-size: 3rem; display: block; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4)); }
+        .menu-item h3 { margin: 0; font-size: 1.2rem; color: #fff; font-weight: 800; }
+        .menu-item p { margin: 10px 0 0; font-size: 0.85rem; color: var(--text-muted); }
 
-        /* --- Result Views --- */
-        #result-view, #tarot-pick-view { display: none; animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Reports Section --- */
+        #result-view, #tarot-pick-view { display: none; animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
-        .sec-title { font-size: 1.5rem; color: var(--white); font-weight: 900; margin: 40px 0 20px; display: flex; align-items: center; gap: 10px; }
-        .sec-title::before { content: ''; width: 5px; height: 24px; background: var(--gold); border-radius: 10px; box-shadow: 0 0 10px var(--gold); }
+        .sec-title { 
+            font-size: 1.6rem; color: #fff; font-weight: 900; margin: 70px 0 25px; 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        .sec-title::before { 
+            content: ''; width: 5px; height: 28px; 
+            background: var(--premium-gold); border-radius: 10px; 
+            box-shadow: 0 0 20px #f6d365;
+        }
 
-        .summary-box { background: rgba(255, 215, 0, 0.06); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 20px; padding: 30px; margin-bottom: 30px; color: var(--gold); font-weight: 800; text-align: center; font-size: 1.1rem; line-height: 1.6; }
-        .detail-text { font-size: 1.05rem; line-height: 2.0; color: var(--text-main); text-align: justify; word-break: keep-all; }
-        .detail-text p { margin-bottom: 20px; }
+        .summary-box { 
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.02) 100%); 
+            border: 1px solid rgba(255, 215, 0, 0.25); 
+            border-radius: 28px; padding: 40px; margin-bottom: 40px; 
+            color: var(--gold-text); font-weight: 800; text-align: center; 
+            font-size: 1.3rem; line-height: 1.7;
+            box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.08);
+        }
+        
+        .principle-box { 
+            background: rgba(0, 242, 255, 0.04); 
+            border-left: 4px solid var(--accent-cyan); 
+            padding: 22px 30px; margin-bottom: 40px; 
+            font-size: 1rem; color: var(--accent-cyan); 
+            line-height: 1.8; font-style: italic;
+        }
+
+        .detail-text { font-size: 1.15rem; line-height: 2.3; color: var(--text-main); text-align: justify; word-break: keep-all; }
+        .detail-text h4 { color: var(--white); font-size: 1.3rem; margin: 40px 0 15px; border-left: 3px solid var(--accent-cyan); padding-left: 15px; }
+        .detail-text p { margin-bottom: 35px; }
+        .detail-text b { color: #fff; font-weight: 900; }
 
         /* --- Saju Pillars --- */
-        .pillar-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 35px; }
-        .pillar { background: #000; padding: 15px 5px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        .pillar span { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
-        .pillar b { font-size: 1.3rem; color: var(--accent); }
+        .pillar-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .pillar { 
+            background: rgba(0, 0, 0, 0.5); 
+            padding: 25px 5px; border-radius: 25px; 
+            text-align: center; border: 1px solid var(--card-border); 
+            transition: 0.4s;
+        }
+        .pillar span { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 800; }
+        .pillar b { font-size: 1.6rem; color: var(--accent-cyan); text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        .pillar-desc { font-size: 0.95rem; color: var(--text-muted); text-align: center; margin-bottom: 50px; line-height: 1.9; }
 
-        /* --- Tarot UI --- */
-        .tarot-spread { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .tarot-card-back { aspect-ratio: 2/3.5; background: linear-gradient(135deg, #1a1d23, #05070a); border: 2px solid var(--accent); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .tarot-card-back.selected { opacity: 0.2; pointer-events: none; border-color: var(--text-muted); }
-        .tarot-card-back:hover { transform: translateY(-5px); border-color: var(--gold); }
+        /* --- Monthly List --- */
+        .month-item { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid var(--card-border); 
+            border-radius: 25px; padding: 35px; margin-bottom: 25px;
+            transition: 0.3s;
+        }
+        .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .month-title { color: #fff; font-weight: 900; font-size: 1.3rem; }
+        .month-luck { color: var(--accent-cyan); font-size: 0.95rem; font-weight: 900; background: rgba(0, 242, 255, 0.12); padding: 5px 15px; border-radius: 25px; }
+
+        /* --- Tarot Visual --- */
+        .tarot-spread { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 25px; justify-items: center; }
+        .tarot-card-back { 
+            width: 100%; max-width: 110px; aspect-ratio: 2/3.3; 
+            background: linear-gradient(135deg, #1c2331, #0a0e14); 
+            border: 2px solid var(--card-border); 
+            border-radius: 15px; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.8rem; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5); 
+        }
+        .tarot-card-back:hover { transform: translateY(-15px) scale(1.05); border-color: var(--accent-cyan); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.25); }
+        .tarot-card-back.selected { opacity: 0; pointer-events: none; }
         
-        .tarot-result-item { margin-bottom: 50px; text-align: center; }
-        .tarot-visual { width: 140px; height: 230px; margin: 0 auto 20px; background: linear-gradient(135deg, #1a1d23, #05070a); border: 4px solid var(--gold); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(255,215,0,0.2); position: relative; }
-        .tarot-visual b { font-size: 4.5rem; margin-bottom: 10px; filter: drop-shadow(0 0 10px #ffd700); }
-        .tarot-visual span { color: #ffd700; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+        .tarot-visual { 
+            width: 180px; height: 280px; margin: 0 auto 30px; 
+            background: linear-gradient(135deg, #1c2331, #05070a); 
+            border: 5px solid var(--gold-text); border-radius: 28px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: 0 0 50px rgba(255,215,0,0.2); position: relative; 
+        }
+        .tarot-visual b { font-size: 6rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--gold-text)); }
+        .tarot-visual span { color: var(--gold-text); font-weight: 900; font-size: 1rem; letter-spacing: 4px; text-transform: uppercase; }
 
-        /* --- Lucky Action Grid --- */
-        .action-box { margin-top: 60px; padding: 35px; border-radius: 35px; border: 1px solid var(--accent); background: linear-gradient(180deg, #0d1117 0%, #05070a 100%); text-align: center; }
-        .action-box h2 { color: var(--accent); font-size: 1.4rem; margin: 0 0 25px; font-weight: 900; }
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .action-item { background: #05070a; border: 1px solid var(--border); border-radius: 20px; padding: 20px 10px; }
-        .action-item .label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 700; }
-        .action-item .value { font-size: 1.05rem; color: var(--gold); font-weight: 900; }
+        /* --- Lucky Action Box --- */
+        .action-box { 
+            margin-top: 120px; padding: 55px 40px; border-radius: 45px; 
+            background: linear-gradient(180deg, rgba(13, 17, 23, 0.95) 0%, rgba(5, 7, 10, 1) 100%); 
+            border: 1px solid var(--accent-cyan); text-align: center; 
+            box-shadow: 0 30px 80px rgba(0, 242, 255, 0.15);
+        }
+        .action-box h2 { color: var(--accent-cyan); font-size: 1.8rem; margin: 0 0 40px; font-weight: 900; letter-spacing: 2px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .action-item { background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); border-radius: 28px; padding: 30px 15px; }
+        .action-item .label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 800; text-transform: uppercase; }
+        .action-item .value { font-size: 1.2rem; color: var(--gold-text); font-weight: 900; }
+        
+        .reason-box { 
+            background: rgba(0, 242, 255, 0.05); border-radius: 25px; 
+            padding: 30px; margin-bottom: 50px; font-size: 1.1rem; 
+            line-height: 1.9; color: var(--text-main); text-align: left; 
+            border-left: 5px solid var(--accent-cyan);
+        }
 
-        /* --- Coupang Revenue --- */
-        .btn-buy { display: inline-block; background: var(--accent); color: #000; padding: 22px 40px; border-radius: 18px; text-decoration: none; font-weight: 900; font-size: 1.2rem; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3); transition: 0.3s; width: 100%; text-align: center; }
-        .btn-buy:hover { background: #fff; transform: scale(1.02); }
-        .disclaimer { font-size: 0.7rem; color: #4e5561; margin-top: 25px; line-height: 1.5; }
+        /* --- Premium Button --- */
+        .btn-buy { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #00f2ff 0%, #007bff 100%);
+            color: #000; padding: 25px 60px; border-radius: 22px; 
+            text-decoration: none; font-weight: 900; font-size: 1.4rem; 
+            box-shadow: 0 20px 45px rgba(0, 242, 255, 0.35); 
+            transition: all 0.4s ease; width: 100%; text-align: center; 
+        }
+        .btn-buy:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 25px 55px rgba(0, 242, 255, 0.45); filter: brightness(1.15); }
+        .disclaimer { font-size: 0.8rem; color: #4e5561; margin-top: 40px; line-height: 1.7; padding: 0 30px; }
 
         /* --- Bottom Nav --- */
-        .nav { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; background: rgba(13, 17, 23, 0.96); backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 9999; }
-        .nav-item { color: #4e5561; text-align: center; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 1.4rem; font-style: normal; }
+        .nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: 100px; 
+            background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(30px); 
+            border-top: 1px solid var(--card-border); 
+            display: flex; justify-content: space-around; align-items: center; z-index: 9999; 
+        }
+        .nav-item { color: #5c6370; text-align: center; font-size: 0.75rem; font-weight: 800; cursor: pointer; text-decoration: none; flex: 1; transition: 0.4s; }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item i { font-size: 1.8rem; font-style: normal; display: block; margin-bottom: 7px; }
 
         /* --- Loader --- */
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 100000; flex-direction: column; justify-content: center; align-items: center; }
-        .spinner { width: 60px; height: 60px; border: 6px solid rgba(0, 242, 255, 0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-deep); z-index: 100000; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { 
+            width: 80px; height: 80px; 
+            border: 5px solid rgba(0, 242, 255, 0.1); 
+            border-top-color: var(--accent-cyan); 
+            border-radius: 50%; animation: spin 1s infinite cubic-bezier(0.5, 0, 0.5, 1); 
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .visitor-count { text-align: center; padding: 20px; font-size: 0.8rem; color: #4e5561; }
+        .visitor-count { text-align: center; padding: 40px; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1.5px; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="spinner"></div>
-    <p style="color: var(--accent); margin-top: 25px; font-weight: 800;">운명의 데이터를 분석 중입니다...</p>
+    <p style="color: var(--accent-cyan); margin-top: 35px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; font-size: 0.9rem;">Analysing Cosmic Coordinates...</p>
 </div>
 
 <div class="app-container">
     <div id="home-view">
         <header class="header">
             <h1>운명의 나침반</h1>
-            <p>정통 천문 역법 기반 프리미엄 운세 리포트</p>
+            <p>Premium Astronomical Fate Report</p>
         </header>
 
         <div class="card">
-            <label>성함</label>
+            <label>상담 대상 성함</label>
             <input type="text" id="user-name" placeholder="이름을 입력하세요">
             
             <label>생년월일</label>
@@ -126,19 +269,19 @@
                 <select id="user-day"></select>
             </div>
 
-            <div style="display: flex; gap: 12px; margin-bottom: 0px;">
+            <div style="display: flex; gap: 15px;">
                 <div style="flex: 1;">
                     <label>성별</label>
                     <select id="user-gender">
-                        <option value="male">남성</option>
-                        <option value="female">여성</option>
+                        <option value="male">남성(陽)</option>
+                        <option value="female">여성(陰)</option>
                     </select>
                 </div>
                 <div style="flex: 1;">
                     <label>력 체계</label>
                     <select id="user-cal">
-                        <option value="solar">양력</option>
-                        <option value="lunar">음력</option>
+                        <option value="solar">양력(太陽曆)</option>
+                        <option value="lunar">음력(太陰曆)</option>
                     </select>
                 </div>
             </div>
@@ -146,20 +289,20 @@
             <label>태어난 시각</label>
             <select id="user-time">
                 <option value="none">모름 / 미정</option>
-                <option value="자">자시 (23:30 ~ 01:29)</option><option value="축">축시 (01:30 ~ 03:29)</option>
-                <option value="인">인시 (03:30 ~ 05:29)</option><option value="묘">묘시 (05:30 ~ 07:29)</option>
-                <option value="진">진시 (07:30 ~ 09:29)</option><option value="사">사시 (09:30 ~ 11:29)</option>
-                <option value="오">오시 (11:30 ~ 13:29)</option><option value="미">미시 (13:30 ~ 15:29)</option>
-                <option value="신">신시 (15:30 ~ 17:29)</option><option value="유">유시 (17:30 ~ 19:29)</option>
-                <option value="술">술시 (19:30 ~ 21:29)</option><option value="해">해시 (21:30 ~ 23:29)</option>
+                <option value="0">자시 (23:30 ~ 01:29)</option><option value="2">축시 (01:30 ~ 03:29)</option>
+                <option value="4">인시 (03:30 ~ 05:29)</option><option value="6">묘시 (05:30 ~ 07:29)</option>
+                <option value="8">진시 (07:30 ~ 09:29)</option><option value="10">사시 (09:30 ~ 11:29)</option>
+                <option value="12">오시 (11:30 ~ 13:29)</option><option value="14">미시 (13:30 ~ 15:29)</option>
+                <option value="16">신시 (15:30 ~ 17:29)</option><option value="18">유시 (17:30 ~ 19:29)</option>
+                <option value="20">술시 (19:30 ~ 21:29)</option><option value="22">해시 (21:30 ~ 23:29)</option>
             </select>
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="handleStart('saju')"><b>🧭</b><h3>사주 분석</h3><p>8단계 심층 리포트</p></div>
-            <div class="menu-item" onclick="handleStart('tojeong')"><b>📜</b><h3>토정비결</h3><p>144괘 월별 운세</p></div>
-            <div class="menu-item" onclick="handleStart('star')"><b>✨</b><h3>별자리</h3><p>기질 및 심리 분석</p></div>
-            <div class="menu-item" onclick="handleStart('tarot')"><b>🃏</b><h3>타로</h3><p>직접 뽑는 3장 리딩</p></div>
+            <div class="menu-item" onclick="handleStart('saju')"><b>🧭</b><h3>정통 사주 분석</h3><p>심층 팔자 리포트</p></div>
+            <div class="menu-item" onclick="handleStart('tojeong')"><b>📜</b><h3>토정비결</h3><p>연간 및 월별 상세운</p></div>
+            <div class="menu-item" onclick="handleStart('star')"><b>✨</b><h3>별자리 심리</h3><p>우주적 기질 분석</p></div>
+            <div class="menu-item" onclick="handleStart('tarot')"><b>🃏</b><h3>타로 무의식</h3><p>3장 스프레드 리딩</p></div>
         </div>
 
         <div class="visitor-count" id="visitor-ui"></div>
@@ -167,20 +310,19 @@
 
     <!-- Tarot Picker -->
     <div id="tarot-pick-view">
-        <header class="header"><h1>무의식의 여정</h1><p>과거, 현재, 미래를 투영할 카드 3장을 고르세요.</p></header>
-        <div style="text-align:center; color:var(--gold); margin-bottom:20px; font-weight:700;" id="tarot-count-info">3장 중 0장 선택됨</div>
+        <header class="header" style="padding: 40px 0 30px;"><h1>무의식의 거울</h1><p>마음을 정돈하고 카드 3장을 고르세요.</p></header>
+        <div class="principle-box">타로의 동시성 원리는 '우연한 선택'이 당신의 무의식과 우주적 흐름이 만나는 지점을 정밀하게 투영합니다.</div>
+        <div style="text-align:center; color:var(--accent-cyan); margin-bottom:25px; font-weight:900; font-size: 1rem;" id="tarot-count-info">3장 중 0장 선택됨</div>
         <div class="tarot-spread" id="tarot-spread-area"></div>
-        <button class="btn-buy" style="background: var(--card); color: #fff; margin-top: 30px;" onclick="location.reload()">홈으로 돌아가기</button>
+        <button class="btn-buy" style="background: var(--card-glass); color: #fff; margin-top: 40px; box-shadow: none;" onclick="location.reload()">처음으로 돌아가기</button>
     </div>
 
-    <!-- Result -->
     <div id="result-view">
         <div id="report-content"></div>
-        <button class="btn-buy" style="background: var(--card); color: #fff; margin-top: 30px; box-shadow: none;" onclick="location.reload()">처음으로 돌아가기</button>
+        <button class="btn-buy" style="background: var(--card-glass); color: #fff; margin-top: 50px; box-shadow: none;" onclick="location.reload()">홈으로 돌아가기</button>
     </div>
 </div>
 
-<!-- Nav -->
 <nav class="nav">
     <div class="nav-item active" onclick="location.reload()"><i>🏠</i>홈</div>
     <div class="nav-item" onclick="handleStart('saju')"><i>🧭</i>사주</div>
@@ -190,27 +332,77 @@
 </nav>
 
 <script>
-    // --- Contents DB ---
+    // --- Contents DB (심층/방대하게 확장) ---
     const sajuData = {
-        personality: (gan) => `<p>귀하의 영혼의 코어인 <b>일간(${gan})</b>은 운명의 핵입니다. 외부 압력에도 본연의 색을 잃지 않는 강력한 자아를 지녔으며, 체계적인 논리와 비범한 직관을 동시에 활용하는 기질이 돋보입니다.</p>`,
-        early: `<p>인생의 봄(초년)에는 변화무쌍한 에너지가 흐릅니다. 다양한 경험을 통해 내면의 그릇을 키우는 시기이며, 이때의 시행착오는 중년의 비상을 위한 필수 데이터가 됩니다.</p>`,
-        middle: `<p>인생의 여름(중년)은 가장 강력한 확장기입니다. 초년에 쌓은 지식이 실질적인 재화와 권위로 치환되며, 자신의 이름이 브랜드가 되는 성취를 이룹니다.</p>`,
-        late: `<p>인생의 가을·겨울(말년)은 화려한 결실의 계절입니다. 물질적 풍요뿐만 아니라 정신적인 고양감이 극대화되어 후배들에게 지혜의 귀감이 되는 명망 있는 위치에 서게 됩니다.</p>`,
-        wealth: `<p>재물운은 노동보다 <b>'지식 자산과 시스템'</b>에서 발생합니다. 무에서 유를 만드는 능력이 탁월하므로, 단기 차익보다는 장기적인 가치 투자와 시스템 구축이 부의 마스터키입니다.</p>`,
-        love: `<p>영혼의 결이 맞는 '지음'을 갈망하는 타입입니다. 외적인 조건보다 대화의 깊이를 중시하며, 마음이 정돈될 때 비로소 운명적인 짝이 나타나는 강력한 끌어당김의 운로를 가졌습니다.</p>`,
-        health: `<p>단기 집중력이 높은 체질로 뇌 신경계의 피로를 주의해야 합니다. 스트레스가 기혈을 막지 않도록 매일의 산책과 '디지털 로그아웃'이 최고의 개운법입니다.</p>`,
-        advice: `<p>귀하의 명식은 <b>대기만성형 개척자</b>의 전형입니다. 지금의 성과에 일희일비하지 마십시오. 시간이 흐를수록 가치가 복리로 증폭되는 구조를 믿고 당신만의 리듬을 유지하십시오.</p>`
+        personality: (gan) => `
+            <h4>천부적인 기질의 원형</h4>
+            <p>귀하의 명식에서 가장 빛나는 태양과 같은 존재인 <b>일간(${gan})</b>은 당신의 영혼 그 자체입니다. 명리학의 정통 이론에 따르면 일간은 세상을 살아가는 원동력이자, 외부의 정보를 걸러내는 필터와 같습니다. 당신의 구조는 <b>자기 주도적 에너지</b>가 매우 강력하게 설계되어 있습니다. 이는 단순히 고집이 센 것이 아니라, 자신만의 가치 체계가 확고하여 대중의 유행이나 타인의 시선에 쉽게 영혼을 팔지 않는 고결함을 의미합니다.</p>
+            <h4>지적 매커니즘과 직관</h4>
+            <p>당신은 논리적 분석과 비범한 직관이라는 양날의 검을 모두 소유하고 있습니다. 겉으로는 유연하고 사교적인 모습을 보이지만, 내면에는 누구도 침범할 수 없는 서늘한 이성이 자리 잡고 있습니다. 남들이 보지 못하는 미세한 틈새를 발견하는 관찰력이 뛰어나며, 복잡한 문제를 단순화하여 해결책을 제시하는 설계가적 기질이 돋보입니다. 이러한 기질은 전문 분야에서 독보적인 위치에 오르게 하는 핵심 자산이 됩니다.</p>
+            <h4>사회적 발현과 페르소나</h4>
+            <p>조직 내에서 당신은 신뢰의 아이콘입니다. 맡은 바 책임을 다하면서도 전체의 흐름을 읽는 안목이 있어 리더 혹은 핵심 참모로서의 역할을 완벽히 수행합니다. 다만, 완벽주의적 성향이 강해 스스로를 채찍질하는 경향이 있으니, 가끔은 자신에게 '불완전할 자유'를 허락하는 것이 정신적 풍요를 유지하는 비책입니다.</p>
+        `,
+        early: `
+            <h4>씨앗이 대지를 뚫는 고난과 축복</h4>
+            <p>인생의 봄에 해당하는 초년운(만 20대 후반까지)은 당신의 그릇을 결정짓는 <b>담금질의 시간</b>입니다. 명리학적으로 이 시기는 '근(根)'을 내리는 과정이며, 때로는 거센 비바람과 같은 환경적 변화를 겪었을 가능성이 큽니다. 하지만 명심하십시오. 당신이 겪은 시행착오는 실패가 아니라 중년의 폭발적 비상을 위한 '데이터 축적' 과정이었습니다.</p>
+            <p>초년의 당신은 독립심이 남달랐을 것입니다. 남의 도움을 받기보다 스스로 길을 개척하려는 에너지가 강하게 발현되었으며, 이 과정에서 축적된 지혜와 맷집은 훗날 그 어떤 자본보다 강력한 무기가 됩니다. 학문적 성취나 자격 획득에 유리한 운로를 가졌으니, 이 시기에 쌓은 지식은 평생의 연금이 될 것입니다.</p>
+        `,
+        middle: `
+            <h4>만개하는 꽃과 강력한 확장기</h4>
+            <p>인생의 여름(만 30대~50대)은 귀하의 인생에서 가장 강력한 <b>터닝포인트</b>와 확장이 일어나는 황금기입니다. 명학적 관점에서 이 시기는 당신의 일간 에너지가 현실 세계의 결과물로 치환되는 구간입니다. 그동안 쌓아온 인적 네트워크와 전문 지식이 폭발하며 사회적 지위와 재물이 급격히 팽창합니다.</p>
+            <p>특히 30대 중반 이후부터는 본인의 이름 자체가 하나의 브랜드가 되는 '독립적 가치 창출'이 활발해집니다. 이 시기에는 인간관계의 확장이 곧 금전적 기회로 연결되므로, 소통의 폭을 넓히고 귀인을 알아보는 안목을 기르는 것이 중요합니다. 당신의 선택이 거대한 파도를 일으키는 시기이니 망설이지 말고 도전하십시오.</p>
+        `,
+        late: `
+            <h4>황금빛 들판과 정신적 안식</h4>
+            <p>인생의 가을과 겨울(만 60대 이후)은 화려한 결실과 평온의 계절입니다. 치열했던 삶의 흔적들이 황금빛 결실로 돌아오는 여유로운 시기로, 물질적 궁핍함이 전혀 없는 대기만성형의 복을 타고났습니다. 명예운이 강력하여 자손이나 후배들에게 존경받는 지혜의 거울 역할을 하게 될 것입니다.</p>
+            <p>단순히 돈을 많이 버는 것을 넘어, 영적인 평온함과 시간적 자유를 동시에 누리는 진정한 풍요가 기다리고 있습니다. 건강 관리만 꾸준히 병행한다면 그 어느 때보다 우아하고 품격 있는 황혼을 보내게 될 것입니다. 당신의 노년은 당신의 전성기보다 더 화려할 수 있습니다.</p>
+        `,
+        wealth: `
+            <h4>부의 연금술: 시스템과 가치</h4>
+            <p>귀하의 재물운은 단순히 몸을 쓰는 노동보다는 <b>'지식 자산과 시스템'</b>에서 폭발적으로 발생합니다. 명리학에서 당신의 재물은 무에서 유를 만드는 창조의 에너지를 담고 있습니다. 가치를 재해석하고 정보를 재조립하여 높은 부가가치를 만들어내는 능력이 부의 원천입니다.</p>
+            <p>단기적인 차익을 노리는 도박성 투자보다는 3년 이상의 장기적인 안목으로 가치에 투자하는 것이 적합합니다. 부동산, 저작권, 혹은 자신만의 비즈니스 시스템과 같은 '고정 자산'을 구축할 때 재물복이 안정적으로 정착됩니다. "돈을 쫓지 말고 가치를 쫓으라"는 격언이 당신에게는 실제 수익으로 환산되는 절대적 진리입니다.</p>
+        `,
+        love: `
+            <h4>주파수의 공명: 소울메이트의 운명</h4>
+            <p>당신은 영혼의 결이 맞는 '지음(知音)'을 갈망하는 지극히 정신적인 타입입니다. 외적인 조건이나 사회적 배경보다는 대화의 깊이와 가치관의 공명을 최우선으로 합니다. 이러한 기질 때문에 연애의 시작은 신중하지만, 한 번 마음을 열면 그 깊이가 바다와 같습니다.</p>
+            <p>억지로 인연을 만들려 애쓰지 마십시오. 당신의 내면이 정돈되고 스스로의 에너지가 맑아졌을 때, 완벽한 짝이 마치 자석처럼 끌려오는 '동시성'의 운로를 가지고 있습니다. 자신을 먼저 사랑하고 품격을 높일 때, 우주는 당신에게 가장 어울리는 인연을 예비해 둘 것입니다.</p>
+        `,
+        health: `
+            <h4>동적 평형: 에너지 순환의 원리</h4>
+            <p>귀하의 체질은 에너지를 한 번에 쏟아붓는 '집중형'에 가깝습니다. 이는 뛰어난 성과를 내게 하지만, 반대로 뇌 신경계의 피로와 스트레스성 순환 정체를 유발하기 쉽습니다. 특히 목과 어깨의 경직은 곧바로 운세의 정체로 이어질 수 있으니 주의가 필요합니다.</p>
+            <p>가장 강력한 보약은 '디지털 로그아웃'과 '규칙적인 보행'입니다. 매일 30분 이상의 숲길 산책이나 명상은 당신의 탁한 기운을 배출하고 새로운 우주 에너지를 수용하는 의식과 같습니다. 몸이 유연해질 때 당신의 운명도 비단결처럼 부드러워질 것입니다.</p>
+        `,
+        advice: `
+            <h4>당신만을 위한 전략적 나침반</h4>
+            <p>귀하의 명식은 전형적인 <b>"대기만성형 개척자"</b>의 구조입니다. 지금 당장 눈앞의 성과가 작아 보인다고 해서 조급해하거나 자신을 의심하지 마십시오. 당신의 인생은 시간이 흐를수록 가치가 복리로 증폭되는 특별한 구조를 가졌습니다.</p>
+            <p>남들의 속도에 맞추지 말고 당신만의 고유한 리듬을 유지하십시오. 당신의 직관은 언제나 정답을 가리키고 있습니다. 타인의 조언보다 당신의 내면에서 들려오는 목소리에 집중할 때, 우주는 상상 이상의 거대한 영광과 기적을 선물할 것입니다. 당신은 이미 완성된 존재입니다.</p>
+        `
     };
 
     const tarotCards = [
-        { name: "THE FOOL", icon: "🃏", msg: "순수한 열정과 모험심이 새로운 길을 엽니다." },
-        { name: "THE MAGICIAN", icon: "🪄", msg: "당신의 재능이 현실로 발현되는 황금기입니다." },
-        { name: "THE EMPRESS", icon: "👑", msg: "풍요와 대지의 만족이 정서적 안정을 줍니다." },
-        { name: "WHEEL OF FORTUNE", icon: "🎡", msg: "거부할 수 없는 변화가 더 높은 곳으로 이끕니다." },
-        { name: "THE SUN", icon: "☀️", msg: "모든 어둠이 걷히고 최고의 영광이 도래합니다." },
-        { name: "THE WORLD", icon: "🌎", msg: "긴 여정의 끝에서 완벽한 마침표를 찍습니다." },
-        { name: "THE STAR", icon: "⭐", msg: "희망의 별이 당신의 앞날을 축복하고 있습니다." },
-        { name: "THE LOVERS", icon: "❤️", msg: "조화로운 결합과 가슴 뛰는 선택의 운기입니다." }
+        { name: "THE FOOL", icon: "🃏", msg: "순수한 열정과 모험심이 새로운 문을 엽니다.", past: "과거에 당신은 아무런 편견 없이 새로운 일에 도전했던 용기 있는 영혼이었습니다. 그때의 순수함이 현재의 기반이 되었습니다.", present: "지금 당신 앞에는 무한한 잠재력이 펼쳐져 있습니다. 벼랑 끝에 서 있는 것처럼 보일지라도, 우주는 당신을 추락하게 두지 않을 것입니다.", future: "망설이지 말고 내딛는 그 한 걸음이 위대한 결과를 만듭니다. 당신이 상상하지 못한 기적 같은 여행이 시작될 것입니다." },
+        { name: "THE MAGICIAN", icon: "🪄", msg: "당신의 재능이 현실로 발현되는 황금기입니다.", past: "그동안 당신은 필요한 모든 도구를 준비하며 자신의 능력을 은밀히 갈고닦았습니다. 충분한 숙련의 기간을 거쳤습니다.", present: "지금은 당신의 아이디어를 구체적인 결과물로 만들 에너지가 충만합니다. 주변의 모든 자원이 당신을 돕기 위해 정렬되어 있습니다.", future: "당신이 주도권을 쥐게 됩니다. 주변을 설득하고 리드하여 성공적인 프로젝트나 관계의 정점에 서게 될 것입니다." },
+        { name: "THE EMPRESS", icon: "👑", msg: "풍요와 대지의 만족이 정서적 안정을 선물합니다.", past: "당신이 뿌린 씨앗이 잘 자라나기 시작한 편안하고 생산적인 시기를 지나왔습니다. 내적인 성장을 이룬 시간들이었습니다.", present: "물질과 마음의 풍요를 동시에 누릴 수 있는 최상의 운기입니다. 사랑받고 있음을 느끼며 감정적으로 매우 충만한 상태입니다.", future: "화려한 결실이 당신을 기다립니다. 타인에게 베푸는 여유를 갖게 되며, 당신이 속한 환경이 더욱 비옥해질 것입니다." },
+        { name: "WHEEL OF FORTUNE", icon: "🎡", msg: "거부할 수 없는 변화가 당신을 상승시킵니다.", past: "운명의 수레바퀴가 크게 요동치며 삶의 환경이 바뀌는 중요한 예고가 있었던 시기였습니다. 변화를 수용하는 법을 배웠습니다.", present: "지금 마주한 사건은 단순한 우연이 아닙니다. 당신을 다음 단계의 인생으로 이끌기 위한 우주의 정교한 배려이자 흐름입니다.", future: "막혔던 일들이 기적처럼 시원하게 풀립니다. 상상 이상의 행운이 도래하며 당신은 운명의 승리자가 될 것입니다." },
+        { name: "THE SUN", icon: "☀️", msg: "모든 어둠이 걷히고 최고의 영광이 찾아옵니다.", past: "시련과 어둠 속에서도 자신만의 빛을 발견하려 끊임없이 노력했습니다. 내면의 아이를 보살피며 성장해온 시간입니다.", present: "모든 광채가 당신을 향하고 있습니다. 완벽한 성공의 가시권에 들어와 있으며, 당신의 활력이 주변을 환하게 밝히고 있습니다.", future: "자신감 넘치는 주인공의 삶을 살게 됩니다. 명예가 드높아지고 당신의 이름이 널리 알려지는 빛나는 성취가 기다립니다." },
+        { name: "THE WORLD", icon: "🌎", msg: "긴 여정의 끝에서 완벽한 마침표를 찍습니다.", past: "목표를 향해 쉼 없이 달려온 성실한 과정이 있었습니다. 수많은 고비를 넘기며 통합과 완성을 향해 걸어왔습니다.", present: "인생의 한 주기가 완성되어 완전한 안정을 누리는 시기입니다. 당신의 노력이 헛되지 않았음을 증명하는 평화로운 시점입니다.", future: "완벽한 마무리는 곧 더 높은 차원의 무대를 의미합니다. 당신은 한 차원 높은 수준에서 새로운 인생의 장을 시작하게 됩니다." },
+        { name: "THE STAR", icon: "⭐", msg: "희망의 별이 당신의 앞날을 축복하고 있습니다.", past: "절망적인 순간에도 희망을 잃지 않고 꿈을 꾸었습니다. 당신의 영감이 당신을 지탱해주던 순수한 시간들이었습니다.", present: "당신의 무의식이 보내는 신호가 현실적인 가이드가 되어주는 시기입니다. 내면의 목소리에 집중하면 답이 보일 것입니다.", future: "당신이 진정으로 원하던 오랜 꿈이 실현됩니다. 정신적인 평화와 더불어 예술적이거나 창의적인 성취가 뒤따를 것입니다." },
+        { name: "THE LOVERS", icon: "❤️", msg: "조화로운 결합과 가슴 뛰는 선택의 운기입니다.", past: "인간관계나 중대한 선택의 기로에서 마음의 소리를 경청했습니다. 진정한 가치가 무엇인지 고민하며 에너지를 모았습니다.", present: "서로 다른 기운이 만나 환상적인 시너지를 내는 매혹적인 타이밍입니다. 연인 혹은 파트너와의 신뢰가 극대화되는 시기입니다.", future: "당신에게 가장 행복한 선택을 하게 됩니다. 사랑과 일 모두에서 조화로운 결실을 맺으며 감정의 풍요를 만끽할 것입니다." }
+    ];
+
+    const monthlyTemplates = [
+        "새로운 인연이 귀인이 되어 찾아오는 달입니다. 대인관계에서 먼저 손을 내밀면 뜻밖의 큰 기회를 잡게 됩니다.",
+        "금전적인 흐름이 원활해지니 투자가 길합니다. 지혜로운 판단으로 자산의 기초를 다지기에 최적인 시기입니다.",
+        "문서상의 이익이 발생하고 중요한 계약이 성사됩니다. 그동안 미뤄왔던 공적인 업무를 처리하기에 좋은 달입니다.",
+        "주변의 시샘을 주의하고 내실을 기해야 합니다. 요란하게 움직이기보다 조용히 실력을 가다듬으며 때를 기다리십시오.",
+        "가정에 경사가 생기고 웃음꽃이 피는 달입니다. 소중한 사람들과 시간을 보내면 긍정적인 에너지가 배가 됩니다.",
+        "멀리서 기쁜 소식이 들려오고 당신의 명예가 오릅니다. 공들인 탑이 무너지지 않듯 성실함이 보상받는 달입니다.",
+        "건강 관리에 유의하며 무리한 확장을 피하십시오. 휴식도 전략입니다. 에너지를 충전하며 하반기를 대비하십시오.",
+        "막혔던 자금줄이 풀리고 사업이나 일이 번창합니다. 막힌 운을 뚫어주는 귀인이 나타나니 소통에 힘쓰십시오.",
+        "이동수나 변화가 있으니 새로운 도전을 즐기십시오. 익숙한 곳을 떠나 낯선 환경에서 큰 영감을 얻게 됩니다.",
+        "학문이나 연구, 혹은 전문 분야에 집중하면 큰 성취가 따릅니다. 당신의 지적 능력이 최고조에 달하는 시기입니다.",
+        "작은 성취가 모여 큰 산을 이루니 절약과 성실이 답입니다. 금전 관리에 철저를 기하면 안정적인 기반을 다집니다.",
+        "한 해의 마무리가 매우 좋으며 대인관계가 깊어집니다. 고마운 분들에게 감사를 표하면 내년의 운이 더 열립니다."
     ];
 
     let tarotChoices = [];
@@ -225,16 +417,16 @@
             for(let i=now; i>=1940; i--) yS.add(new Option(i+'년', i));
             for(let i=1; i<=12; i++) mS.add(new Option(i+'월', i));
             for(let i=1; i<=31; i++) dS.add(new Option(i+'일', i));
-            yS.value = 1990; mS.value = 1; dS.value = 1;
+            yS.value = 1995; mS.value = 1; dS.value = 1;
         }
         
-        const tk = 'destiny_v_total_vfinal';
-        const dk = 'destiny_v_today_vfinal_' + new Date().toDateString();
+        const tk = 'premium_total_final_v1';
+        const dk = 'premium_today_final_v1_' + new Date().toDateString();
         let total = parseInt(localStorage.getItem(tk) || 0) + 1;
         let today = parseInt(localStorage.getItem(dk) || 0) + 1;
         localStorage.setItem(tk, total); localStorage.setItem(dk, today);
         const visitorUI = document.getElementById('visitor-ui');
-        if(visitorUI) visitorUI.innerHTML = `🔮 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명 상담 완료`;
+        if(visitorUI) visitorUI.innerHTML = `🌟 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명이 프리미엄 상담을 받았습니다.`;
     }
 
     function getOhaeng(gan) {
@@ -242,18 +434,35 @@
         if ('戊己'.includes(gan)) return '토(土)'; if ('庚辛'.includes(gan)) return '금(金)'; return '수(水)';
     }
 
-    function getLuckSet(ohaeng) {
-        const set = {
-            '목(木)': { item: '천연 식물 화분', dir: '정동쪽', color: '딥 그린', num: '3, 8' },
-            '화(火)': { item: '조명 무드등', dir: '정남쪽', color: '버건디 레드', num: '2, 7' },
-            '토(土)': { item: '가죽 지갑', dir: '중앙/동북', color: '옐로우', num: '5, 0' },
-            '금(金)': { item: '메탈 시계', dir: '정서쪽', color: '코발트 블루', num: '4, 9' },
-            '수(水)': { item: '가습기 / 텀블러', dir: '정북쪽', color: '딥 블랙', num: '1, 6' }
+    function getLuckSet(ohaeng, seed) {
+        const itemPool = {
+            '목(木)': [
+                { item: '천연 식물 화분', dir: '정동쪽', color: '딥 그린', reason: '귀하는 생동하는 성장의 에너지가 필요합니다. 살아있는 식물은 정체된 운의 흐름을 정화하고 당신의 잠재된 활기를 깨워 개운을 돕습니다.' },
+                { item: '나무 소재 디퓨저', dir: '동쪽', color: '라이트 그린', reason: '나무의 향취는 당신의 창의력을 높입니다. 스트레스를 완화하고 정신적 안정을 통해 새로운 시작의 에너지를 강력하게 활성화합니다.' }
+            ],
+            '화(火)': [
+                { item: '무드등 조명', dir: '정남쪽', color: '버건디', reason: '명예와 빛을 상징하는 화의 에너지를 보강합니다. 따스한 조명은 당신의 가치를 세상에 더 밝게 드러내는 자석 역할을 하여 성공을 앞당깁니다.' },
+                { item: '붉은색 카드 지갑', dir: '남쪽', color: '레드', reason: '열정을 금전운으로 치환합니다. 붉은 색상은 재물의 유출을 막고 강력한 성취 욕구를 자극하는 당신만의 최고의 개운 비책입니다.' }
+            ],
+            '토(土)': [
+                { item: '천연 가죽 소품', dir: '중앙', color: '옐로우', reason: '안정과 수용을 뜻하는 토의 에너지는 가죽 소재와 환상의 궁합입니다. 흔들리는 마음을 잡아주고 재물을 묵직하게 쌓아주는 기반을 형성합니다.' },
+                { item: '세라믹 오브제', dir: '동북쪽', color: '베이지', reason: '흙을 구운 도자기는 신뢰의 기운을 보강합니다. 공간에 배치하는 것만으로도 안정적인 운의 흐름을 만들어내어 가정과 일의 화합을 돕습니다.' }
+            ],
+            '금(金)': [
+                { item: '메탈 프레임 시계', dir: '정서쪽', color: '실버', reason: '금속의 단호함이 당신의 결단력을 높여줍니다. 시계의 정밀함은 흐트러진 일상의 운을 바로잡고 목표를 향한 정확한 타격을 돕는 필수템입니다.' },
+                { item: '스테인리스 텀블러', dir: '북서쪽', color: '그레이', reason: '견고한 금속 소재는 당신의 본질적 기운을 완벽히 보호합니다. 과열된 에너지를 조절하여 실리를 챙기는 냉철한 판단력을 유지시켜 줍니다.' }
+            ],
+            '수(水)': [
+                { item: '초음파 가습기', dir: '정북쪽', color: '딥 블랙', reason: '지혜를 뜻하는 수의 기운은 촉촉한 습도에서 완성됩니다. 가습기는 당신의 유연한 사고와 위기 대처 능력을 길러주는 핵심 개운 요소입니다.' },
+                { item: '수분 크림 세트', dir: '북서쪽', color: '블루', reason: '수분을 공급하는 행위는 본질적 에너지를 채우는 신성한 의식입니다. 피부의 윤기가 곧 운의 윤기가 되어 당신에게 귀한 소식을 가져올 것입니다.' }
+            ]
         };
-        return set[ohaeng] || set['토(土)'];
+        const pool = itemPool[ohaeng] || itemPool['토(土)'];
+        const selected = pool[seed % pool.length];
+        return { ...selected, num: (seed % 9) + 1 };
     }
 
-    // --- Logic ---
+    // --- Core Logic ---
     async function handleStart(type) {
         const nameInput = document.getElementById('user-name');
         if (!nameInput || !nameInput.value) return alert("성함을 입력해 주세요.");
@@ -263,6 +472,7 @@
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('tarot-pick-view').style.display = 'block';
             renderDeck();
+            window.scrollTo(0, 0);
             return;
         }
 
@@ -272,7 +482,7 @@
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('result-view').style.display = 'block';
             renderFinalReport(type, calculateBaseData());
-        }, 1500);
+        }, 2200);
     }
 
     function renderDeck() {
@@ -304,7 +514,7 @@
                 const d = calculateBaseData();
                 d.tarotRes = tarotChoices.map(idx => tarotCards[idx % tarotCards.length]);
                 renderFinalReport('tarot', d);
-            }, 1200);
+            }, 1800);
         }
     }
 
@@ -313,73 +523,100 @@
         const y = document.getElementById('user-year').value;
         const m = document.getElementById('user-month').value;
         const d = document.getElementById('user-day').value;
-        const sol = Solar.fromYmd(parseInt(y), parseInt(m), parseInt(d));
+        const h = document.getElementById('user-time').value;
+        let hour = h === 'none' ? 12 : parseInt(h);
+        const sol = Solar.fromYmdHms(parseInt(y), parseInt(m), parseInt(d), hour, 0, 0);
         const bazi = sol.getLunar().getEightChar();
-        const myGan = bazi.getDayGan();
-        const oh = getOhaeng(myGan);
-        return { name: n, bazi, ohaeng: oh, luck: getLuckSet(oh), seed: n.length + parseInt(d), sol };
+        const oh = getOhaeng(bazi.getDayGan());
+        const seed = n.length + parseInt(d) + parseInt(m);
+        return { name: n, bazi, ohaeng: oh, luck: getLuckSet(oh, seed), seed, sol };
     }
 
     function renderFinalReport(type, d) {
-        let html = `<div class="header"><h1>${d.name}님의 분석 리포트</h1></div>`;
+        let html = `<div class="header"><h1>${d.name}님의 심층 운명 리포트</h1></div>`;
         if (type === 'saju') {
             html += `
+                <div class="principle-box">사주는 당신이 태어난 순간의 우주 에너지를 천문학적 좌표로 환산하여 인생의 지도를 그리는 고도의 통계학이자 철학입니다.</div>
                 <div class="pillar-row">
-                    <div class="pillar"><span>시주</span><b>-</b></div>
-                    <div class="pillar"><span>일주</span><b>${d.bazi.getDayGan()}${d.bazi.getDayZhi()}</b></div>
-                    <div class="pillar"><span>월주</span><b>${d.bazi.getMonthGan()}${d.bazi.getMonthZhi()}</b></div>
-                    <div class="pillar"><span>연주</span><b>${d.bazi.getYearGan()}${d.bazi.getYearZhi()}</b></div>
+                    <div class="pillar"><span>시주(열매)</span><b>${d.bazi.getTimeGan()}${d.bazi.getTimeZhi()}</b></div>
+                    <div class="pillar"><span>일주(꽃/나)</span><b>${d.bazi.getDayGan()}${d.bazi.getDayZhi()}</b></div>
+                    <div class="pillar"><span>월주(줄기)</span><b>${d.bazi.getMonthGan()}${d.bazi.getMonthZhi()}</b></div>
+                    <div class="pillar"><span>연주(뿌리)</span><b>${d.bazi.getYearGan()}${d.bazi.getYearZhi()}</b></div>
                 </div>
-                <div class="sec-title">1. 기본 성향</div><div class="summary-box">"귀하는 ${d.ohaeng}의 기운을 품은 주도적 인물입니다."</div><div class="detail-text">${sajuData.personality(d.bazi.getDayGan())}</div>
-                <div class="sec-title">2. 초년운</div><div class="detail-text">${sajuData.early}</div>
-                <div class="sec-title">3. 중년운</div><div class="detail-text">${sajuData.middle}</div>
-                <div class="sec-title">4. 말년운</div><div class="detail-text">${sajuData.late}</div>
-                <div class="sec-title">5. 재물/시스템</div><div class="detail-text">${sajuData.wealth}</div>
-                <div class="sec-title">6. 애정/인연</div><div class="detail-text">${sajuData.love}</div>
-                <div class="sec-title">7. 건강 에너지</div><div class="detail-text">${sajuData.health}</div>
-                <div class="sec-title">8. 종합 조언</div><div class="detail-text">${sajuData.advice}</div>
+                <div class="pillar-desc">
+                    <b>연주(年柱):</b> 가문의 흐름과 유년 시절의 환경적 배경 <br>
+                    <b>월주(月柱):</b> 부모와 사회적 기반, 그리고 진로의 핵심 <br>
+                    <b>일주(日柱):</b> 본질적인 성격과 인생 중반의 도약 동력 <br>
+                    <b>시주(時柱):</b> 최종적 결과와 노년의 안식 및 후손과의 인연
+                </div>
+                <div class="sec-title">1. 본원의 거울: 기본 성향</div><div class="summary-box">"귀하는 ${d.ohaeng}의 기운을 품은 주도적 전략가입니다."</div><div class="detail-text">${sajuData.personality(d.bazi.getDayGan())}</div>
+                <div class="sec-title">2. 초년운: 인생의 봄</div><div class="detail-text">${sajuData.early}</div>
+                <div class="sec-title">3. 중년운: 인생의 여름</div><div class="detail-text">${sajuData.middle}</div>
+                <div class="sec-title">4. 말년운: 결실의 시기</div><div class="detail-text">${sajuData.late}</div>
+                <div class="sec-title">5. 재물운: 부의 연금술</div><div class="detail-text">${sajuData.wealth}</div>
+                <div class="sec-title">6. 애정운: 주파수의 공명</div><div class="detail-text">${sajuData.love}</div>
+                <div class="sec-title">7. 건강운: 동적 평형</div><div class="detail-text">${sajuData.health}</div>
+                <div class="sec-title">8. 종합 조언: 당신을 위한 나침반</div><div class="detail-text">${sajuData.advice}</div>
             `;
         } else if (type === 'tarot') {
             const labels = ["과거의 영향", "현재의 상황", "미래의 흐름"];
-            html += `<div class="sec-title">타로 3카드 정밀 리포트</div>`;
+            const steps = ["past", "present", "future"];
+            html += `<div class="sec-title">타로 3카드 심층 스토리텔링</div>`;
             d.tarotRes.forEach((c, i) => {
                 html += `
                     <div class="tarot-result-item">
-                        <span style="color:var(--accent); font-weight:900; display:block; margin-bottom:15px;">[ ${labels[i]} ]</span>
+                        <span style="color:var(--accent-cyan); font-weight:900; display:block; margin-bottom:25px; font-size:1.3rem;">[ ${labels[i]} ]</span>
                         <div class="tarot-visual"><b>${c.icon}</b><span>${c.name}</span></div>
                         <div class="summary-box">" ${c.msg} "</div>
+                        <div class="detail-text"><p>${c[steps[i]]}</p></div>
                     </div>
                 `;
             });
         } else if (type === 'star') {
-            const dates = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
             const signs = ["염소", "물병", "물고기", "양", "황소", "쌍둥이", "게", "사자", "처녀", "천칭", "전갈", "사수", "염소"];
-            const m = d.sol.getMonth(); const day = d.sol.getDay();
-            const signKey = day > dates[m - 1] ? signs[m] : signs[m - 1];
-            html += `<div class="sec-title">별자리 분석: ${signKey}자리</div><div class="summary-box">당신은 고유한 우주적 지문을 타고났습니다.</div><div class="detail-text"><p>별자리의 에너지는 귀하의 사회적 페르소나를 결정합니다. 자신을 믿고 나아갈 때 거대한 성취가 따릅니다.</p></div>`;
+            const signKey = signs[d.sol.getMonth()];
+            html += `
+                <div class="principle-box">별자리는 태어난 날 태양의 궤적을 통해 당신의 본질적 기질과 사회적 페르소나를 정의합니다.</div>
+                <div class="sec-title">별자리 심층 분석: ${signKey}자리</div>
+                <div class="summary-box">당신은 고유한 우주적 지문을 타고났습니다.</div>
+                <div class="detail-text">
+                    <h4>기질의 근원</h4>
+                    <p>당신의 별자리인 <b>${signKey}자리</b>는 우주의 에너지가 당신의 성격에 깊이 각인된 좌표입니다. 당신은 남들보다 예민한 감수성과 더불어 강력한 추진력을 동시에 보유한 특별한 영혼입니다. 이는 마치 하늘의 별이 어둠 속에서 빛나듯, 당신의 사회적 소통 방식과 감정 조절 능력이 주변 사람들에게 큰 영향을 미친다는 것을 의미합니다.</p>
+                    <h4>사회적 발현</h4>
+                    <p>자신을 믿고 나아갈 때 거대한 성취가 따를 것입니다. 당신은 군중 속에 있어도 자신만의 색깔을 잃지 않으며, 창의적인 아이디어가 샘솟는 천부적인 능력을 가졌습니다. 이 기운을 현실적인 성과로 연결시키기 위해서는 매일 아침 명상을 통해 우주의 주파수와 당신의 의지를 동기화시키는 습관이 필요합니다.</p>
+                </div>
+            `;
         } else if (type === 'tojeong') {
-            html += `<div class="sec-title">토정비결 괘 분석</div><div class="summary-box">봄 산에 꽃이 만발하니 나비가 찾아옵니다.</div><div class="detail-text"><p>올해는 문서상 이익이 예상되며 귀인의 도움이 따릅니다. 하반기에 큰 성취가 따를 것이니 성실히 준비하십시오.</p></div>`;
+            html += `
+                <div class="principle-box">토정비결은 수리 체계를 활용하여 1년의 기상도를 예측하는 정통 비결서로, 당신의 시간적 흐름을 분석합니다.</div>
+                <div class="sec-title">토정비결 올해의 총체적 흐름</div>
+                <div class="summary-box">봄 산에 꽃이 만발하니 나비가 찾아와 기쁨을 나누는 형국입니다.</div>
+                <div class="detail-text"><p>올해는 <b>문서상의 큰 이익</b>이 예상되며, 예상치 못한 장소에서 당신을 도울 귀인의 손길이 기다리고 있습니다. 무리한 확장보다는 내실을 기하며 하반기에 올 거대한 결실의 파도를 준비하십시오. 꾸준한 성실함이 당신의 인생을 바꾸는 마법이 될 것입니다.</p></div>
+                <div class="sec-title">월별 세부 운세 가이드</div>
+            `;
+            for(let i=1; i<=12; i++) {
+                const idx = (d.seed + i) % monthlyTemplates.length;
+                html += `<div class="month-item"><div class="month-header"><span class="month-title">${i}월 운세 리포트</span><span class="month-luck">운기 지수: ${85 + (idx % 16)}%</span></div><div class="detail-text" style="font-size: 1.1rem;">${monthlyTemplates[idx]} 마음을 다스리고 겸손을 잃지 않는다면 길운이 폭발적으로 증폭되는 한 달이 될 것입니다.</div></div>`;
+            }
         }
 
         const cpUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(d.luck.item)}&utm_source=affiliate&utm_medium=affiliate&utm_campaign=link_erqHD0`;
         html += `
             <div class="action-box">
-                <h2>✨ ${d.name}님을 위한 개운 액션</h2>
+                <h2>✨ ${d.name}님을 위한 개운(開運) 시스템</h2>
                 <div class="action-grid">
-                    <div class="action-item"><div class="label">행운의 방향</div><div class="value">${d.luck.dir}</div></div>
-                    <div class="action-item"><div class="label">수호 색상</div><div class="value">${d.luck.color}</div></div>
-                    <div class="action-item"><div class="label">행운의 숫자</div><div class="value">${(d.seed % 9) + 1}</div></div>
-                    <div class="action-item"><div class="label">추천 행운템</div><div class="value">${d.luck.item}</div></div>
+                    <div class="action-item"><div class="label">행운의 방위</div><div class="value">${d.luck.dir}</div></div>
+                    <div class="action-item"><div class="label">수호 컬러</div><div class="value">${d.luck.color}</div></div>
+                    <div class="action-item"><div class="label">행운의 수리</div><div class="value">${d.luck.num}</div></div>
+                    <div class="action-item"><div class="label">추천 개운템</div><div class="value">${d.luck.item}</div></div>
                 </div>
+                <div class="reason-box"><b>💡 개운 비책:</b> ${d.luck.reason} 부족한 오행의 기운을 외부 자극을 통해 보강함으로써, 당신의 운명이 가진 본연의 빛을 더욱 찬란하게 만드는 전략적 보사법(補瀉法)입니다.</div>
                 <a href="${cpUrl}" target="_blank" class="btn-buy">👉 ${d.luck.item} 최저가 확인하기</a>
-                <div class="disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div>
+                <div class="disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다. 아이템 구매 여부와 상관없이 상담 결과의 가치는 변함이 없습니다.</div>
             </div>
         `;
-        const reportContent = document.getElementById('report-content');
-        if(reportContent) {
-            reportContent.innerHTML = html;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        document.getElementById('report-content').innerHTML = html;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     window.onload = init;
