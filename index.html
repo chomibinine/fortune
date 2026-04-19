@@ -671,7 +671,7 @@
     let tarotChoices = [];
     function renderDeck() {
         const area=document.getElementById('tarot-spread-area'); area.innerHTML=''; tarotChoices=[];
-        let currentTarotDeck = [...tarotFullDeck].sort(()=>0.5-Math.random());
+        let currentTarotDeck = [...tarotCards].sort(()=>0.5-Math.random());
         for(let i=0; i<22; i++){
             const c=document.createElement('div'); c.className='tarot-card-container'; c.onclick=()=>pickTarot(i, currentTarotDeck);
             c.innerHTML=`<div class="tarot-card-inner" id="t-inner-${i}"><div class="tarot-card-front"></div><div class="tarot-card-back" id="t-back-${i}"></div></div>`;
