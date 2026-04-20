@@ -6,8 +6,8 @@
     
     <!-- ★ SEO 최적화 메타 태그 시작 ★ -->
     <title>운명의 나침반 | 소름돋는 무료 사주·타로·토정비결 운세</title>
-    <meta name="description" content="소름 돋게 정확한 나만의 운세 리포트. 무료 사주팔자, 22장 메이저 타로카드, 2026년 신년 토정비결, 별자리 점성술까지 운명의 나침반에서 완벽하게 확인하세요.">
-    <meta name="keywords" content="운세, 무료운세, 사주, 사주팔자, 타로, 타로카드, 토정비결, 신년운세, 오늘운세, 별자리운세, 점성술, 운명의나침반">
+    <meta name="description" content="소름 돋게 정확한 나만의 운세 리포트. 무료 사주팔자, 22장 메이저 타로카드, 신년 토정비결, 별자리 점성술까지 운명의 나침반에서 완벽하게 확인하세요.">
+    <meta name="keywords" content="운세, 무료운세, 사주, 사주팔자, 타로, 타로카드, 토정비결, 신년운세, 오늘운세, 별자리운세, 점성술, 건강운, 재물운, 운명의나침반">
     <link rel="canonical" href="https://your-domain.com/"> <!-- 나중에 실제 도메인으로 변경하세요 -->
     
     <!-- ★ Open Graph (카톡/SNS 공유 시 노출되는 정보) ★ -->
@@ -439,6 +439,14 @@
         '금(金)': '날카로운 이성과 높은 기준을 충족시켜줄 수 있는 세련되고 <b>자기 관리가 매우 철저하며 정신적으로 독립적인 프로페셔널한 성향</b>의 상대와 인연이 있습니다. 징얼거리며 지나치게 의존하기보다 진심으로 존경할 수 있는 파트너로서 함께 성장할 때 관계가 가장 단단해집니다.',
         '수(水)': '비밀이 많고 속을 알 수 없는 당신의 깊은 우울과 내면을 꿰뚫어 보고 따뜻하게 품어줄 <b>성격이 티 없이 밝고 긍정적이며 유머 감각이 뛰어난 성향</b>의 인연이 대길합니다. 당신의 복잡하게 꼬인 머릿속을 명쾌하고 단순하게 만들어주는 영혼의 단짝을 만나게 됩니다.'
     };
+    // ★ 건강운 (새로 추가됨) ★
+    const sajuHealth = {
+        '목(木)': '목(木)의 기운은 <b>간과 신경계</b>를 주관합니다. 평소에는 비교적 건강하지만, 스트레스가 극에 달하면 만성 피로나 신경성 질환으로 이어지기 쉽습니다. 주말에는 자연 속에서 휴식하며 눈의 피로를 풀어주고, 꾸준한 스트레칭으로 뭉친 근육을 자주 이완시켜 주는 것이 최고의 보약입니다.',
+        '화(火)': '화(火)의 기운은 <b>심장, 혈관, 그리고 시력</b>과 깊은 연관이 있습니다. 에너지를 급격히 소모하고 끓어오르는 경향이 있어 심혈관계 질환이나 불면증에 취약할 수 있습니다. 땀을 흠뻑 흘리는 격렬한 운동보다는, 수영이나 명상처럼 내면의 열기를 식혀주고 차분함을 유지할 수 있는 활동이 건강을 든든하게 지켜줍니다.',
+        '토(土)': '토(土)의 기운은 <b>위장과 소화 기관</b>을 담당합니다. 생각이 많아지고 스트레스를 받으면 가장 먼저 소화 불량이나 위장 장애로 신호가 옵니다. 또한 에너지를 체내에 축적하려는 성질 탓에 체중이 쉽게 불어날 수 있으므로, 규칙적인 식습관과 꾸준한 걷기 등 유산소 운동으로 순환을 돕는 것이 필수적입니다.',
+        '금(金)': '금(金)의 기운은 <b>폐, 호흡기, 대장, 그리고 뼈(관절)</b>를 주관합니다. 호흡기계가 다소 예민하여 환절기 비염이나 기관지 질환에 각별히 주의해야 합니다. 생활 환경의 건조함을 피하고 따뜻한 차를 자주 마시며, 실내 공기를 항상 맑게 유지하는 것이 질병을 막는 핵심 열쇠입니다.',
+        '수(水)': '수(水)의 기운은 <b>신장, 방광, 그리고 내분비계</b>를 관장합니다. 체력의 뿌리가 되는 생명력이 깃든 곳이나, 몸이 쉽게 차가워지고 혈액 순환이 둔해져 우울감에 빠지기 쉬운 체질입니다. 항상 아랫배를 따뜻하게 유지하고 반신욕이나 족욕을 즐기며, 적절한 수분 섭취와 염분 조절에 신경 써야 합니다.'
+    };
     const sajuAdvice = {
         '목(木)': '당장 눈앞의 성과가 작아 보인다고 해서 조급해하거나 스스로를 의심하지 마십시오. 세상을 덮을 거대한 나무는 결코 하루아침에 자라지 않습니다. 당신 특유의 올곧은 꾸준함을 잃지 않는다면 머지않아 그 시원한 그늘 아래로 세상의 부와 명예가 알아서 모여들 것입니다.',
         '화(火)': '가끔은 화려한 무대의 정중앙에서 한 걸음 물러나 오롯이 혼자만의 침묵을 가지며 내면을 식히는 연습이 절실히 필요합니다. 순간적으로 끓어오르는 감정 폭발을 지혜롭게 통제하고 이성을 서늘하게 유지하는 순간, 당신의 재능은 절대적인 권력으로 치환될 것입니다.',
@@ -611,7 +619,7 @@
         if(yS){ for(let i=now;i>=1940;i--) yS.add(new Option(i+'년', i)); for(let i=1;i<=12;i++) mS.add(new Option(i+'월', i)); for(let i=1;i<=31;i++) dS.add(new Option(i+'일', i)); yS.value=1995; mS.value=1; dS.value=1; }
         const p = JSON.parse(localStorage.getItem('premium_mystic_profile'));
         if(p && document.getElementById('user-name')) { document.getElementById('user-name').value=p.name||""; yS.value=p.year||1995; mS.value=p.month||1; dS.value=p.day||1; document.getElementById('user-gender').value=p.gender||"male"; document.getElementById('user-cal').value=p.cal||"solar"; document.getElementById('user-time').value=p.time||"none"; }
-        const tk='premium_total_final_v23', dk='premium_today_final_v23_'+new Date().toDateString();
+        const tk='premium_total_final_v24', dk='premium_today_final_v24_'+new Date().toDateString();
         let total=parseInt(localStorage.getItem(tk)||0)+1, today=parseInt(localStorage.getItem(dk)||0)+1; localStorage.setItem(tk, total); localStorage.setItem(dk, today);
         const v = document.getElementById('visitor-ui'); if(v) v.innerHTML=`🌟 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명이 우주와 동기화했습니다.`;
     }
@@ -745,6 +753,9 @@
             h += wrap(`<div class="sec-title">💰 부의 연금술 (재물운)</div><div class="detail-text"><p>${sajuWealth[d.ohaeng]}</p></div>`);
             h += wrap(`<div class="sec-title">💼 별이 내린 천직 (직업운)</div><div class="detail-text"><p>${sajuCareer[d.ohaeng]}</p></div>`);
             h += wrap(`<div class="sec-title">❤️ 주파수의 공명 (배우자운)</div><div class="detail-text"><p>${sajuSpouse[d.ohaeng]}</p></div>`);
+            // ★ 건강운 섹션 렌더링 ★
+            h += wrap(`<div class="sec-title">💪 생명력의 흐름 (건강운)</div><div class="detail-text"><p>${sajuHealth[d.ohaeng]}</p></div>`);
+            
             h += wrap(`<div class="sec-title">🤝 천을귀인: 절대 조력자</div><div class="helper-box"><div class="helper-icon">${hi.icon}</div><div class="helper-info"><h4>나의 귀인: <span>${hi.animals}</span></h4><p>${hi.desc}</p></div></div>`);
             
             let timelineHtml = ''; const bA = ['자(쥐)', '축(소)', '인(호랑이)', '묘(토끼)', '진(용)', '사(뱀)', '오(말)', '미(양)', '신(원숭이)', '유(닭)', '술(개)', '해(돼지)'];
