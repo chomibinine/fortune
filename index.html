@@ -1,10 +1,24 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>운명의 나침반 - [무료]프리미엄 정통 운세 포털</title>
-    <meta name="description" content="무료, 정통 사주, 토정비결, 점성술 분석. 타로 카드, 당신의 무의식과 우주적 흐름을 투영합니다.">
+    
+    <!-- ★ SEO 최적화 메타 태그 시작 ★ -->
+    <title>운명의 나침반 | 소름돋는 무료 사주·타로·토정비결 운세</title>
+    <meta name="description" content="소름 돋게 정확한 나만의 운세 리포트. 무료 사주팔자, 22장 메이저 타로카드, 2026년 신년 토정비결, 별자리 점성술까지 운명의 나침반에서 완벽하게 확인하세요.">
+    <meta name="keywords" content="운세, 무료운세, 사주, 사주팔자, 타로, 타로카드, 토정비결, 신년운세, 오늘운세, 별자리운세, 점성술, 운명의나침반">
+    <link rel="canonical" href="https://your-domain.com/"> <!-- 나중에 실제 도메인으로 변경하세요 -->
+    
+    <!-- ★ Open Graph (카톡/SNS 공유 시 노출되는 정보) ★ -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="운명의 나침반 | 소름돋는 무료 사주·타로·토정비결">
+    <meta property="og:description" content="나의 영혼을 비추는 거울. 무료 사주, 타로, 토정비결 리포트와 나만의 맞춤형 행운 아이템을 지금 바로 확인해보세요.">
+    <!-- <meta property="og:image" content="https://your-domain.com/preview-image.jpg"> 공유 시 보일 썸네일 이미지 주소를 나중에 넣어주세요 -->
+    <meta property="og:site_name" content="운명의 나침반">
+    <!-- ★ SEO 최적화 메타 태그 끝 ★ -->
+
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
@@ -34,7 +48,6 @@
             font-family: 'Pretendard', sans-serif; 
             -webkit-tap-highlight-color: transparent; 
             margin: 0; padding: 0; 
-            /* 단어 기준 줄바꿈 적용 */
             word-break: keep-all; 
             overflow-wrap: break-word;
         }
@@ -64,7 +77,7 @@
             background: var(--premium-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             text-shadow: 0 10px 40px rgba(212,175,55,0.25); margin-bottom: 12px; 
         }
-        .header p { font-size: 0.95rem; color: var(--text-muted); letter-spacing: 5px; text-transform: uppercase; font-weight: 400; }
+        .header p { font-size: 0.95rem; color: var(--text-muted); letter-spacing: 2px; font-weight: 400; }
 
         /* --- Privacy Notice --- */
         .privacy-notice { 
@@ -298,7 +311,7 @@
     <div id="home-view">
         <header class="header">
             <h1>운명의 나침반</h1>
-            <p>Premium Mystic Oracle</p>
+            <p>프리미엄 사주 · 타로 · 토정비결</p>
         </header>
 
         <div class="privacy-notice">
@@ -599,7 +612,7 @@
         if(yS){ for(let i=now;i>=1940;i--) yS.add(new Option(i+'년', i)); for(let i=1;i<=12;i++) mS.add(new Option(i+'월', i)); for(let i=1;i<=31;i++) dS.add(new Option(i+'일', i)); yS.value=1995; mS.value=1; dS.value=1; }
         const p = JSON.parse(localStorage.getItem('premium_mystic_profile'));
         if(p && document.getElementById('user-name')) { document.getElementById('user-name').value=p.name||""; yS.value=p.year||1995; mS.value=p.month||1; dS.value=p.day||1; document.getElementById('user-gender').value=p.gender||"male"; document.getElementById('user-cal').value=p.cal||"solar"; document.getElementById('user-time').value=p.time||"none"; }
-        const tk='premium_total_final_v22', dk='premium_today_final_v22_'+new Date().toDateString();
+        const tk='premium_total_final_v23', dk='premium_today_final_v23_'+new Date().toDateString();
         let total=parseInt(localStorage.getItem(tk)||0)+1, today=parseInt(localStorage.getItem(dk)||0)+1; localStorage.setItem(tk, total); localStorage.setItem(dk, today);
         const v = document.getElementById('visitor-ui'); if(v) v.innerHTML=`🌟 오늘 <b>${today}</b>명 · 누적 <b>${total}</b>명이 우주와 동기화했습니다.`;
     }
@@ -646,7 +659,6 @@
     let tarotChoices = [];
     function renderDeck() {
         const area=document.getElementById('tarot-spread-area'); area.innerHTML=''; tarotChoices=[];
-        // 🐞 버그 수정: tarotFullDeck -> tarotCards 변경 완료!
         let currentTarotDeck = [...tarotCards].sort(()=>0.5-Math.random());
         for(let i=0; i<22; i++){
             const c=document.createElement('div'); c.className='tarot-card-container'; c.onclick=()=>pickTarot(i, currentTarotDeck);
